@@ -189,7 +189,7 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
 		// Check if we're over the GridManager
 		bool placedOnGrid = false;
-		if ( currentShape != null)
+		if (currentShape != null)
 		{
 			RectTransform gridRect = GridManager.instance.GetComponent<RectTransform>();
 			if (gridRect != null && RectTransformUtility.RectangleContainsScreenPoint(gridRect, eventData.position, canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera))
@@ -226,25 +226,48 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 	private Vector2Int GetClosestGridPosition(Vector2 localPoint, RectTransform gridRect)
 	{
 		// Get grid dimensions from GridManager
-		Vector2Int gridSize = new Vector2Int(GridManager.instance.GridSize, GridManager.instance.GridSize);
+		int gridSizeValue = GridManager.instance.GridSize;
+		Vector2Int gridSize = new Vector2Int(gridSizeValue, gridSizeValue);
 
-		float gridWidth = gridRect.rect.width;
-		float gridHeight = gridRect.rect.height;
-		float cellSizeX = gridWidth / gridSize.x;
-		float cellSizeY = gridHeight / gridSize.y;
+		// The GridManager has padding and calculates actual grid dimensions
+		// We need to match that calculation
+		float padding = 10f; // GridManager default padding
+		float availableWidth = gridRect.rect.width - (padding * 2);
+		float availableHeight = gridRect.rect.height - (padding * 2);
 
-		// localPoint is already relative to the gridRect's pivot (which is at its center)
-		// So we just need to offset by half the grid dimensions
-		float offsetX = localPoint.x + (gridWidth / 2f);
-		float offsetY = localPoint.y + (gridHeight / 2f);
+		float cellSize = Mathf.Min(availableWidth / gridSize.x, availableHeight / gridSize.y);
+		float actualGridWidth = gridSize.x * cellSize;
+		float actualGridHeight = gridSize.y * cellSize;
+
+		// localPoint is relative to the gridRect's center
+		// Offset to get coordinates relative to top-left of actual grid
+		float offsetX = localPoint.x + (actualGridWidth / 2f);
+		float offsetY = localPoint.y + (actualGridHeight / 2f);
 
 		// Calculate grid position
-		int gridX = Mathf.RoundToInt(offsetX / cellSizeX);
-		int gridY = Mathf.RoundToInt(offsetY / cellSizeY);
+		// The shape's visual is centered using this offset in Initialize:
+		// centerOffset = new Vector2(-(totalWidth / 4f), -(totalHeight / 4f)) + Vector2.one * (cellSize/4);
+		// This means the shape's grid coordinate system is offset from its visual center
+
+		int shapeGridSize = currentShape.gridSize;
+
+		// The visual center is at (shapeGridSize / 2) in shape grid coordinates
+		// We need to subtract this to get the position of grid coordinate (0,0)
+		float shapeCenterInTiles = shapeGridSize / 4.0f; // Matches the /4 in centerOffset calculation
+
+		float gridPosX = (offsetX / cellSize) - shapeCenterInTiles;
+		float gridPosY = (offsetY / cellSize) - shapeCenterInTiles;
+
+		int gridX = Mathf.RoundToInt(gridPosX);
+		int gridY = Mathf.RoundToInt(gridPosY);
 
 		// Clamp to grid bounds
 		gridX = Mathf.Clamp(gridX, 0, gridSize.x - 1);
 		gridY = Mathf.Clamp(gridY, 0, gridSize.y - 1);
+
+		Debug.Log($"Shape gridSize: {currentShape.gridSize}");
+		Debug.Log($"Cell Size: {cellSize}, Actual Grid: {actualGridWidth}x{actualGridHeight}");
+		Debug.Log($"Offset: ({offsetX}, {offsetY}) -> GridPos: ({gridPosX}, {gridPosY}) -> Final: ({gridX}, {gridY})");
 
 		return new Vector2Int(gridX, gridY);
 	}
