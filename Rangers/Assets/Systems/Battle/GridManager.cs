@@ -138,16 +138,19 @@ public class GridManager : MonoBehaviour
         return line;
     }
 
+    [Button("Add shape")]
     public void AddShape(ShapeData shape, Vector2Int baseLocation, bool enemyTile)
 	{
-        if (shape == null)
+        var inst = Instantiate(shape);
+
+        if (inst == null)
         {
             Debug.LogWarning("GridManager: Attempted to add null shape");
             return;
         }
 
         // Store the shape data
-        appliedShapes[shape] = new AppliedShapeData
+        appliedShapes[inst] = new AppliedShapeData
         {
             basePosition = baseLocation,
             allyTile = !enemyTile
@@ -227,6 +230,7 @@ public class GridManager : MonoBehaviour
         var allyShapes = appliedShapes.Where(kvp => kvp.Value.allyTile).Select(kvp => kvp.Key).ToList();
         foreach (var shape in allyShapes)
         {
+            Destroy(shape);
             appliedShapes.Remove(shape);
         }
 
@@ -252,6 +256,11 @@ public class GridManager : MonoBehaviour
     [Button("Clear All Tiles")]
     public void ClearAllTiles()
 	{
+        foreach (var shape in appliedShapes)
+        {
+            Destroy(shape.Key);
+        }
+
         appliedShapes.Clear();
         cellOccupancy.Clear();
         UpdateDrawGrid();
