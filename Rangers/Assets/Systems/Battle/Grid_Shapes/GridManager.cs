@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class GridManager : MonoBehaviour
 {
+    public static GridManager instance;
+
     public enum LineState
 	{
         empty,
@@ -17,6 +19,7 @@ public class GridManager : MonoBehaviour
 
     [Title("Grid Configuration")]
     [SerializeField] private Vector2Int gridSize = new Vector2Int(15, 15);
+    public int GridSize => gridSize.x;
     [SerializeField] private float lineThickness = 3f;
     [SerializeField] private float padding = 10f;
 
@@ -54,6 +57,8 @@ public class GridManager : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
+
         StartCoroutine(InitializeGridDelayed());
     }
 
