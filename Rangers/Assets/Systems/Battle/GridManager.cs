@@ -54,6 +54,16 @@ public class GridManager : MonoBehaviour
 
     private void Awake()
     {
+        StartCoroutine(InitializeGridDelayed());
+    }
+
+    /// <summary>
+    /// Initialize grid after Canvas has been properly laid out
+    /// </summary>
+    private IEnumerator InitializeGridDelayed()
+    {
+        // Wait for end of frame to ensure Canvas layout is complete
+        yield return new WaitForEndOfFrame();
         InitializeGrid();
     }
 
@@ -121,8 +131,8 @@ public class GridManager : MonoBehaviour
 
         if (isHorizontal)
         {
-            // Horizontal line
-            rect.sizeDelta = new Vector2(cellSize, lineThickness);
+            // Horizontal line - extend by half thickness on each end
+            rect.sizeDelta = new Vector2(cellSize + lineThickness, lineThickness);
             float posX = (x * cellSize) - (gridWidth / 2f) + (cellSize / 2f);
             float posY = (y * cellSize) - (gridHeight / 2f);
             rect.anchoredPosition = new Vector2(posX, posY);
@@ -130,8 +140,8 @@ public class GridManager : MonoBehaviour
         }
         else
         {
-            // Vertical line
-            rect.sizeDelta = new Vector2(lineThickness, cellSize);
+            // Vertical line - extend by half thickness on each end
+            rect.sizeDelta = new Vector2(lineThickness, cellSize + lineThickness);
             float posX = (x * cellSize) - (gridWidth / 2f);
             float posY = (y * cellSize) - (gridHeight / 2f) + (cellSize / 2f);
             rect.anchoredPosition = new Vector2(posX, posY);
@@ -355,6 +365,12 @@ public class GridManager : MonoBehaviour
             {
                 LineState state = GetLineState(coord, true);
                 line.color = GetColorForState(state);
+
+                // Bring colored lines to front of hierarchy
+                if (state != LineState.empty)
+                {
+                    line.transform.SetAsLastSibling();
+                }
             }
         }
 
@@ -368,6 +384,12 @@ public class GridManager : MonoBehaviour
             {
                 LineState state = GetLineState(coord, false);
                 line.color = GetColorForState(state);
+
+                // Bring colored lines to front of hierarchy
+                if (state != LineState.empty)
+                {
+                    line.transform.SetAsLastSibling();
+                }
             }
         }
 	}

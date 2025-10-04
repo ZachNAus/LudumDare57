@@ -281,8 +281,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridSize: {x: 5, y: 5}
-  lineThickness: 10
-  padding: 20
+  lineThickness: 50
+  padding: 50
   cellSize: 100
   gridContainer: {fileID: 1310320427}
   linePrefab: {fileID: 7968465836643048221, guid: a0a4a9433e7b8ec458f9fc292a28fac9, type: 3}
