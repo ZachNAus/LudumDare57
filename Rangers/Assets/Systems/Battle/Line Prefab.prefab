@@ -135,3 +135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   btn: {fileID: 7055082770533934961}
   img: {fileID: 7968465836643048221}
+  popScale: 0.2
+  popTime: 0.5
+  popvibrato: 7
+  popelasticity: 2

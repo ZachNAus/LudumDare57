@@ -177,6 +177,9 @@ public class GridManager : MonoBehaviour
             allyTile = !enemyTile
         };
 
+        // Track updated lines for pop effect
+        HashSet<(Vector2Int coord, bool isHorizontal)> updatedLines = new HashSet<(Vector2Int, bool)>();
+
         // Read the gridWrapper from the shape and mark white tiles as occupied
         var gridWrapper = inst.GridWrapper;
         if (gridWrapper != null && gridWrapper.rows != null)
@@ -208,12 +211,25 @@ public class GridManager : MonoBehaviour
                             targetOccupancy[finalCoord][isAllyShape] = 0;
                         }
                         targetOccupancy[finalCoord][isAllyShape]++;
+
+                        // Track this line for pop effect
+                        updatedLines.Add((finalCoord, isHorizontal));
                     }
                 }
             }
         }
 
         UpdateDrawGrid();
+
+        // Pop all updated lines
+        foreach (var (coord, isHorizontal) in updatedLines)
+        {
+            Dictionary<Vector2Int, LineFX> targetLines = isHorizontal ? horizontalLines : verticalLines;
+            if (targetLines.TryGetValue(coord, out LineFX line) && line != null)
+            {
+                line.PopLine();
+            }
+        }
 	}
 
     /// <summary>
@@ -505,6 +521,9 @@ public class GridManager : MonoBehaviour
         Vector2Int basePosition = shapeData.basePosition;
         bool isAlly = shapeData.allyTile;
 
+        // Track updated lines for pop effect
+        HashSet<(Vector2Int coord, bool isHorizontal)> updatedLines = new HashSet<(Vector2Int, bool)>();
+
         // Remove occupancy data for this shape
         var gridWrapper = shape.GridWrapper;
         if (gridWrapper != null && gridWrapper.rows != null)
@@ -537,6 +556,9 @@ public class GridManager : MonoBehaviour
 							{
                                 targetOccupancy.Remove(finalCoord);
 							}
+
+                            // Track this line for pop effect
+                            updatedLines.Add((finalCoord, isHorizontal));
 						}
 					}
 				}
@@ -548,6 +570,16 @@ public class GridManager : MonoBehaviour
         Destroy(shape);
 
         UpdateDrawGrid();
+
+        // Pop all updated lines
+        foreach (var (coord, isHorizontal) in updatedLines)
+        {
+            Dictionary<Vector2Int, LineFX> targetLines = isHorizontal ? horizontalLines : verticalLines;
+            if (targetLines.TryGetValue(coord, out LineFX line) && line != null)
+            {
+                line.PopLine();
+            }
+        }
 	}
 
     /// <summary>

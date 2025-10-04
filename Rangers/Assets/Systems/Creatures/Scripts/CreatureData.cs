@@ -30,20 +30,17 @@ public class CreatureData : ScriptableObject
 
 	public void FillPool(bool isEnemy)
 	{
-		if (isEnemy)
-		{
-
-		}
+		currentShapePool.AddRange(isEnemy ? enemyShapePool : allyShapePool);
 	}
 
 	public void RemoveFromPool(ShapeData shape)
 	{
 		var toRemove = currentShapePool.FirstOrDefault(x => x.uniqueID == shape.uniqueID);
 
-		if(toRemove)
+		if (toRemove)
 			currentShapePool.Remove(toRemove);
 
-		if(currentShapePool.Count == 0)
+		if (currentShapePool.Count == 0)
 		{
 			//Fill up the pool again
 		}
