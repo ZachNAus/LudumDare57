@@ -497,7 +497,7 @@ MonoBehaviour:
   padding: 50
   cellSize: 100
   gridContainer: {fileID: 1310320427}
-  linePrefab: {fileID: 7968465836643048221, guid: a0a4a9433e7b8ec458f9fc292a28fac9, type: 3}
+  linePrefab: {fileID: 768684006934400372, guid: a0a4a9433e7b8ec458f9fc292a28fac9, type: 3}
   emptyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   allyColor: {r: 0, g: 0, b: 1, a: 1}
   enemyColor: {r: 1, g: 0, b: 0, a: 1}

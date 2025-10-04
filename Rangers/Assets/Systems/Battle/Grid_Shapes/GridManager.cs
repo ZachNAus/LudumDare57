@@ -27,7 +27,7 @@ public class GridManager : MonoBehaviour
 
     [Title("UI References")]
     [SerializeField] private RectTransform gridContainer;
-    [SerializeField] private Image linePrefab;
+    [SerializeField] private LineFX linePrefab;
 
     [Title("Line Colors")]
     [SerializeField] private Color emptyColor = Color.gray;
@@ -42,12 +42,13 @@ public class GridManager : MonoBehaviour
     class AppliedShapeDict : SerializableDictionary<ShapeData, AppliedShapeData> { }
 
     // Grid state tracking - separate for horizontal and vertical lines
-    private Dictionary<Vector2Int, HashSet<bool>> horizontalLineOccupancy = new Dictionary<Vector2Int, HashSet<bool>>();
-    private Dictionary<Vector2Int, HashSet<bool>> verticalLineOccupancy = new Dictionary<Vector2Int, HashSet<bool>>();
+    // Dictionary maps: coordinate -> (isAlly -> count)
+    private Dictionary<Vector2Int, Dictionary<bool, int>> horizontalLineOccupancy = new Dictionary<Vector2Int, Dictionary<bool, int>>();
+    private Dictionary<Vector2Int, Dictionary<bool, int>> verticalLineOccupancy = new Dictionary<Vector2Int, Dictionary<bool, int>>();
 
     // UI line references
-    private Dictionary<Vector2Int, Image> horizontalLines = new Dictionary<Vector2Int, Image>();
-    private Dictionary<Vector2Int, Image> verticalLines = new Dictionary<Vector2Int, Image>();
+    private Dictionary<Vector2Int, LineFX> horizontalLines = new Dictionary<Vector2Int, LineFX>();
+    private Dictionary<Vector2Int, LineFX> verticalLines = new Dictionary<Vector2Int, LineFX>();
 
     struct AppliedShapeData
 	{
@@ -107,7 +108,7 @@ public class GridManager : MonoBehaviour
             for (int x = 0; x < gridSize.x; x++)
             {
                 Vector2Int coord = new Vector2Int(x, y);
-                Image line = CreateLine(true, x, y, gridWidth, gridHeight);
+                LineFX line = CreateLine(true, x, y, gridWidth, gridHeight);
                 horizontalLines[coord] = line;
             }
         }
@@ -118,7 +119,7 @@ public class GridManager : MonoBehaviour
             for (int y = 0; y < gridSize.y; y++)
             {
                 Vector2Int coord = new Vector2Int(x, y);
-                Image line = CreateLine(false, x, y, gridWidth, gridHeight);
+                LineFX line = CreateLine(false, x, y, gridWidth, gridHeight);
                 verticalLines[coord] = line;
             }
         }
@@ -129,9 +130,9 @@ public class GridManager : MonoBehaviour
     /// <summary>
     /// Create a single line UI element
     /// </summary>
-    private Image CreateLine(bool isHorizontal, int x, int y, float gridWidth, float gridHeight)
+    private LineFX CreateLine(bool isHorizontal, int x, int y, float gridWidth, float gridHeight)
     {
-        Image line = Instantiate(linePrefab, gridContainer);
+        LineFX line = Instantiate(linePrefab, gridContainer);
         RectTransform rect = line.rectTransform;
 
         if (isHorizontal)
@@ -153,7 +154,8 @@ public class GridManager : MonoBehaviour
             line.name = $"V_Line ({x},{y})";
         }
 
-        line.color = emptyColor;
+        line.SetColor(emptyColor);
+        line.Initialise();
         return line;
     }
 
@@ -183,48 +185,29 @@ public class GridManager : MonoBehaviour
             {
                 for (int x = 0; x < gridWrapper.rows[y].colors.Count; x++)
                 {
-                    // Skip green cells (odd x AND odd y only)
-                    if ((x % 2 == 1 && y % 2 == 1) || (x % 2 == 0 && y % 2 == 0))
+                    if (ShouldSkipCell(x, y))
                         continue;
 
                     Color cellColor = gridWrapper.rows[y].colors[x];
 
-                    // Check if the cell is white (or approximately white)
                     if (IsWhite(cellColor))
                     {
-                        // Map shape grid position to horizontal/vertical line coordinates
                         bool isHorizontal;
-                        Vector2Int lineCoord;
-
-                        if (x % 2 == 0 && y % 2 == 0)
-                        {
-                            // Even x, Even y → Vertical line
-                            isHorizontal = false;
-                            lineCoord = new Vector2Int(x / 2, y / 2);
-                        }
-                        else if (x % 2 == 1 && y % 2 == 0)
-                        {
-                            // Odd x, Even y → Horizontal line (top edge of cell)
-                            isHorizontal = true;
-                            lineCoord = new Vector2Int((x - 1) / 2, y / 2);
-                        }
-                        else // (x % 2 == 0 && y % 2 == 1)
-                        {
-                            // Even x, Odd y → Vertical line (between columns)
-                            isHorizontal = false;
-                            lineCoord = new Vector2Int(x / 2, (y - 1) / 2);
-                        }
-
-                        // Apply offset from base location
+                        Vector2Int lineCoord = MapShapePositionToLineCoord(x, y, out isHorizontal);
                         Vector2Int finalCoord = baseLocation + lineCoord;
 
                         // Mark line as occupied in the correct dictionary
-                        Dictionary<Vector2Int, HashSet<bool>> targetOccupancy = isHorizontal ? horizontalLineOccupancy : verticalLineOccupancy;
+                        Dictionary<Vector2Int, Dictionary<bool, int>> targetOccupancy = isHorizontal ? horizontalLineOccupancy : verticalLineOccupancy;
                         if (!targetOccupancy.ContainsKey(finalCoord))
                         {
-                            targetOccupancy[finalCoord] = new HashSet<bool>();
+                            targetOccupancy[finalCoord] = new Dictionary<bool, int>();
                         }
-                        targetOccupancy[finalCoord].Add(!enemyTile); // true for ally, false for enemy
+                        bool isAllyShape = !enemyTile;
+                        if (!targetOccupancy[finalCoord].ContainsKey(isAllyShape))
+                        {
+                            targetOccupancy[finalCoord][isAllyShape] = 0;
+                        }
+                        targetOccupancy[finalCoord][isAllyShape]++;
                     }
                 }
             }
@@ -244,6 +227,43 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Map shape grid position (x, y) to line coordinates
+    /// </summary>
+    /// <param name="x">X position in shape grid</param>
+    /// <param name="y">Y position in shape grid</param>
+    /// <param name="isHorizontal">Output: whether this is a horizontal line</param>
+    /// <returns>The line coordinate in the shape's local space</returns>
+    private Vector2Int MapShapePositionToLineCoord(int x, int y, out bool isHorizontal)
+	{
+        if (x % 2 == 0 && y % 2 == 0)
+		{
+            // Even x, Even y → Vertical line
+            isHorizontal = false;
+            return new Vector2Int(x / 2, y / 2);
+		}
+        else if (x % 2 == 1 && y % 2 == 0)
+		{
+            // Odd x, Even y → Horizontal line (top edge of cell)
+            isHorizontal = true;
+            return new Vector2Int((x - 1) / 2, y / 2);
+		}
+        else // (x % 2 == 0 && y % 2 == 1)
+		{
+            // Even x, Odd y → Vertical line (between columns)
+            isHorizontal = false;
+            return new Vector2Int(x / 2, (y - 1) / 2);
+		}
+	}
+
+    /// <summary>
+    /// Check if a cell should be skipped (green cells)
+    /// </summary>
+    private bool ShouldSkipCell(int x, int y)
+	{
+        return (x % 2 == 1 && y % 2 == 1) || (x % 2 == 0 && y % 2 == 0);
+	}
+
+    /// <summary>
     /// Looks at the current state of the grid and returns which color the current line is
     /// </summary>
     /// <param name="coords">The coordinate of the line to check</param>
@@ -251,27 +271,30 @@ public class GridManager : MonoBehaviour
     /// <returns>The state of the line based on occupancy</returns>
     public LineState GetLineState(Vector2Int coords, bool isHorizontal)
 	{
-        Dictionary<Vector2Int, HashSet<bool>> targetOccupancy = isHorizontal ? horizontalLineOccupancy : verticalLineOccupancy;
+        Dictionary<Vector2Int, Dictionary<bool, int>> targetOccupancy = isHorizontal ? horizontalLineOccupancy : verticalLineOccupancy;
 
         if (!targetOccupancy.ContainsKey(coords) || targetOccupancy[coords].Count == 0)
         {
             return LineState.empty;
         }
 
-        HashSet<bool> occupants = targetOccupancy[coords];
+        Dictionary<bool, int> occupants = targetOccupancy[coords];
 
-        // Check if both allies and enemies occupy this cell
-        if (occupants.Contains(true) && occupants.Contains(false))
+        bool hasAllies = occupants.ContainsKey(true) && occupants[true] > 0;
+        bool hasEnemies = occupants.ContainsKey(false) && occupants[false] > 0;
+
+        // Check if both allies and enemies occupy this line
+        if (hasAllies && hasEnemies)
         {
             return LineState.clash;
         }
         // Only allies
-        else if (occupants.Contains(true))
+        else if (hasAllies)
         {
             return LineState.ally;
         }
         // Only enemies
-        else if (occupants.Contains(false))
+        else if (hasEnemies)
         {
             return LineState.enemy;
         }
@@ -316,7 +339,10 @@ public class GridManager : MonoBehaviour
         var hCellsToUpdate = horizontalLineOccupancy.Keys.ToList();
         foreach (var cell in hCellsToUpdate)
         {
-            horizontalLineOccupancy[cell].Remove(true); // Remove allies (true)
+            if (horizontalLineOccupancy[cell].ContainsKey(true))
+            {
+                horizontalLineOccupancy[cell].Remove(true); // Remove allies (true)
+            }
             if (horizontalLineOccupancy[cell].Count == 0)
             {
                 horizontalLineOccupancy.Remove(cell);
@@ -327,7 +353,10 @@ public class GridManager : MonoBehaviour
         var vCellsToUpdate = verticalLineOccupancy.Keys.ToList();
         foreach (var cell in vCellsToUpdate)
         {
-            verticalLineOccupancy[cell].Remove(true); // Remove allies (true)
+            if (verticalLineOccupancy[cell].ContainsKey(true))
+            {
+                verticalLineOccupancy[cell].Remove(true); // Remove allies (true)
+            }
             if (verticalLineOccupancy[cell].Count == 0)
             {
                 verticalLineOccupancy.Remove(cell);
@@ -355,6 +384,173 @@ public class GridManager : MonoBehaviour
 	}
 
     /// <summary>
+    /// Called when a LineFX object is clicked
+    /// </summary>
+    public void OnLineClicked(LineFX clickedLine)
+	{
+        // Find the coordinate and orientation of the clicked line
+        Vector2Int? foundCoord = null;
+        bool isHorizontal = false;
+
+        // Check horizontal lines
+        foreach (var kvp in horizontalLines)
+		{
+            if (kvp.Value == clickedLine)
+			{
+                foundCoord = kvp.Key;
+                isHorizontal = true;
+                break;
+			}
+		}
+
+        // Check vertical lines if not found
+        if (!foundCoord.HasValue)
+		{
+            foreach (var kvp in verticalLines)
+			{
+                if (kvp.Value == clickedLine)
+				{
+                    foundCoord = kvp.Key;
+                    isHorizontal = false;
+                    break;
+				}
+			}
+		}
+
+        if (!foundCoord.HasValue)
+		{
+            Debug.LogWarning("GridManager: Clicked line not found in grid!");
+            return;
+		}
+
+        Vector2Int lineCoord = foundCoord.Value;
+
+        // Get the occupancy dictionary for this line type
+        Dictionary<Vector2Int, Dictionary<bool, int>> targetOccupancy = isHorizontal ? horizontalLineOccupancy : verticalLineOccupancy;
+
+        // Check if this line has any ally occupancy
+        if (!targetOccupancy.ContainsKey(lineCoord) ||
+            !targetOccupancy[lineCoord].ContainsKey(true) ||
+            targetOccupancy[lineCoord][true] <= 0)
+		{
+            Debug.Log("GridManager: Clicked line has no ally shapes.");
+            return;
+		}
+
+        // Find the first ally shape that occupies this line
+        ShapeData shapeToRemove = null;
+        foreach (var kvp in appliedShapes)
+		{
+            if (!kvp.Value.allyTile)
+                continue; // Skip enemy shapes
+
+            ShapeData shape = kvp.Key;
+            Vector2Int basePosition = kvp.Value.basePosition;
+
+            // Check if this shape occupies the clicked line
+            var gridWrapper = shape.GridWrapper;
+            if (gridWrapper != null && gridWrapper.rows != null)
+			{
+                for (int y = 0; y < gridWrapper.rows.Count; y++)
+				{
+                    for (int x = 0; x < gridWrapper.rows[y].colors.Count; x++)
+					{
+                        if (ShouldSkipCell(x, y))
+                            continue;
+
+                        Color cellColor = gridWrapper.rows[y].colors[x];
+
+                        if (IsWhite(cellColor))
+						{
+                            bool lineIsHorizontal;
+                            Vector2Int lineCoordInShape = MapShapePositionToLineCoord(x, y, out lineIsHorizontal);
+                            Vector2Int finalCoord = basePosition + lineCoordInShape;
+
+                            // Check if this matches our clicked line
+                            if (lineIsHorizontal == isHorizontal && finalCoord == lineCoord)
+							{
+                                shapeToRemove = shape;
+                                break;
+							}
+						}
+					}
+                    if (shapeToRemove != null)
+                        break;
+				}
+			}
+
+            if (shapeToRemove != null)
+                break;
+		}
+
+        // Remove the shape if found
+        if (shapeToRemove != null)
+		{
+            RemoveSingleShape(shapeToRemove);
+		}
+	}
+
+    /// <summary>
+    /// Remove a single shape from the grid
+    /// </summary>
+    private void RemoveSingleShape(ShapeData shape)
+	{
+        if (!appliedShapes.ContainsKey(shape))
+		{
+            Debug.LogWarning("GridManager: Attempted to remove shape that isn't in appliedShapes!");
+            return;
+		}
+
+        AppliedShapeData shapeData = appliedShapes[shape];
+        Vector2Int basePosition = shapeData.basePosition;
+        bool isAlly = shapeData.allyTile;
+
+        // Remove occupancy data for this shape
+        var gridWrapper = shape.GridWrapper;
+        if (gridWrapper != null && gridWrapper.rows != null)
+		{
+            for (int y = 0; y < gridWrapper.rows.Count; y++)
+			{
+                for (int x = 0; x < gridWrapper.rows[y].colors.Count; x++)
+				{
+                    if (ShouldSkipCell(x, y))
+                        continue;
+
+                    Color cellColor = gridWrapper.rows[y].colors[x];
+
+                    if (IsWhite(cellColor))
+					{
+                        bool isHorizontal;
+                        Vector2Int lineCoord = MapShapePositionToLineCoord(x, y, out isHorizontal);
+                        Vector2Int finalCoord = basePosition + lineCoord;
+
+                        // Remove from occupancy
+                        Dictionary<Vector2Int, Dictionary<bool, int>> targetOccupancy = isHorizontal ? horizontalLineOccupancy : verticalLineOccupancy;
+                        if (targetOccupancy.ContainsKey(finalCoord) && targetOccupancy[finalCoord].ContainsKey(isAlly))
+						{
+                            targetOccupancy[finalCoord][isAlly]--;
+                            if (targetOccupancy[finalCoord][isAlly] <= 0)
+							{
+                                targetOccupancy[finalCoord].Remove(isAlly);
+							}
+                            if (targetOccupancy[finalCoord].Count == 0)
+							{
+                                targetOccupancy.Remove(finalCoord);
+							}
+						}
+					}
+				}
+			}
+		}
+
+        // Remove from appliedShapes and destroy the object
+        appliedShapes.Remove(shape);
+        Destroy(shape);
+
+        UpdateDrawGrid();
+	}
+
+    /// <summary>
     /// Update the UI to match what the current grid should look like
     /// </summary>
     [Button("Update Grid Display")]
@@ -364,12 +560,12 @@ public class GridManager : MonoBehaviour
         foreach (var kvp in horizontalLines)
         {
             Vector2Int coord = kvp.Key;
-            Image line = kvp.Value;
+            LineFX line = kvp.Value;
 
             if (line != null)
             {
                 LineState state = GetLineState(coord, true);
-                line.color = GetColorForState(state);
+                line.SetColor(GetColorForState(state));
 
                 // Bring colored lines to front of hierarchy
                 if (state != LineState.empty)
@@ -383,12 +579,12 @@ public class GridManager : MonoBehaviour
         foreach (var kvp in verticalLines)
         {
             Vector2Int coord = kvp.Key;
-            Image line = kvp.Value;
+            LineFX line = kvp.Value;
 
             if (line != null)
             {
                 LineState state = GetLineState(coord, false);
-                line.color = GetColorForState(state);
+                line.SetColor(GetColorForState(state));
 
                 // Bring colored lines to front of hierarchy
                 if (state != LineState.empty)
