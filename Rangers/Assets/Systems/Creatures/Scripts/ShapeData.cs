@@ -18,8 +18,10 @@ public class ShapeData : ScriptableObject
 
 	public Color currentColor = Color.white;
 
-	[SerializeField, HideInInspector]
+	[SerializeField]//, HideInInspector]
 	private ColorGridWrapper gridWrapper = new ColorGridWrapper();
+
+	public ColorGridWrapper GridWrapper => gridWrapper;
 
 	[ShowInInspector, OnInspectorGUI("DrawColorGrid")]
 	private bool showGrid = true;

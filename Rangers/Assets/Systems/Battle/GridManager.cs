@@ -38,8 +38,9 @@ public class GridManager : MonoBehaviour
     [System.Serializable]
     class AppliedShapeDict : SerializableDictionary<ShapeData, AppliedShapeData> { }
 
-    // Grid state tracking
-    private Dictionary<Vector2Int, HashSet<bool>> cellOccupancy = new Dictionary<Vector2Int, HashSet<bool>>();
+    // Grid state tracking - separate for horizontal and vertical lines
+    private Dictionary<Vector2Int, HashSet<bool>> horizontalLineOccupancy = new Dictionary<Vector2Int, HashSet<bool>>();
+    private Dictionary<Vector2Int, HashSet<bool>> verticalLineOccupancy = new Dictionary<Vector2Int, HashSet<bool>>();
 
     // UI line references
     private Dictionary<Vector2Int, Image> horizontalLines = new Dictionary<Vector2Int, Image>();
@@ -72,7 +73,8 @@ public class GridManager : MonoBehaviour
         gridContainer.DestroyAllChildren();
         horizontalLines.Clear();
         verticalLines.Clear();
-        cellOccupancy.Clear();
+        horizontalLineOccupancy.Clear();
+        verticalLineOccupancy.Clear();
 
         // Get grid container dimensions with padding
         float availableWidth = gridContainer.rect.width - (padding * 2);
@@ -124,6 +126,7 @@ public class GridManager : MonoBehaviour
             float posX = (x * cellSize) - (gridWidth / 2f) + (cellSize / 2f);
             float posY = (y * cellSize) - (gridHeight / 2f);
             rect.anchoredPosition = new Vector2(posX, posY);
+            line.name = $"H_Line ({x},{y})";
         }
         else
         {
@@ -132,6 +135,7 @@ public class GridManager : MonoBehaviour
             float posX = (x * cellSize) - (gridWidth / 2f);
             float posY = (y * cellSize) - (gridHeight / 2f) + (cellSize / 2f);
             rect.anchoredPosition = new Vector2(posX, posY);
+            line.name = $"V_Line ({x},{y})";
         }
 
         line.color = emptyColor;
@@ -156,31 +160,90 @@ public class GridManager : MonoBehaviour
             allyTile = !enemyTile
         };
 
-        // Mark cells as occupied
-        // Note: This assumes shapes occupy a single cell at baseLocation
-        // Expand this logic when ShapeData contains actual shape patterns
-        if (!cellOccupancy.ContainsKey(baseLocation))
+        // Read the gridWrapper from the shape and mark white tiles as occupied
+        var gridWrapper = inst.GridWrapper;
+        if (gridWrapper != null && gridWrapper.rows != null)
         {
-            cellOccupancy[baseLocation] = new HashSet<bool>();
+            for (int y = 0; y < gridWrapper.rows.Count; y++)
+            {
+                for (int x = 0; x < gridWrapper.rows[y].colors.Count; x++)
+                {
+                    // Skip green cells (odd x AND odd y only)
+                    if ((x % 2 == 1 && y % 2 == 1) || (x % 2 == 0 && y % 2 == 0))
+                        continue;
+
+                    Color cellColor = gridWrapper.rows[y].colors[x];
+
+                    // Check if the cell is white (or approximately white)
+                    if (IsWhite(cellColor))
+                    {
+                        // Map shape grid position to horizontal/vertical line coordinates
+                        bool isHorizontal;
+                        Vector2Int lineCoord;
+
+                        if (x % 2 == 0 && y % 2 == 0)
+                        {
+                            // Even x, Even y → Vertical line
+                            isHorizontal = false;
+                            lineCoord = new Vector2Int(x / 2, y / 2);
+                        }
+                        else if (x % 2 == 1 && y % 2 == 0)
+                        {
+                            // Odd x, Even y → Horizontal line (top edge of cell)
+                            isHorizontal = true;
+                            lineCoord = new Vector2Int((x - 1) / 2, y / 2);
+                        }
+                        else // (x % 2 == 0 && y % 2 == 1)
+                        {
+                            // Even x, Odd y → Vertical line (between columns)
+                            isHorizontal = false;
+                            lineCoord = new Vector2Int(x / 2, (y - 1) / 2);
+                        }
+
+                        // Apply offset from base location
+                        Vector2Int finalCoord = baseLocation + lineCoord;
+
+                        // Mark line as occupied in the correct dictionary
+                        Dictionary<Vector2Int, HashSet<bool>> targetOccupancy = isHorizontal ? horizontalLineOccupancy : verticalLineOccupancy;
+                        if (!targetOccupancy.ContainsKey(finalCoord))
+                        {
+                            targetOccupancy[finalCoord] = new HashSet<bool>();
+                        }
+                        targetOccupancy[finalCoord].Add(!enemyTile); // true for ally, false for enemy
+                    }
+                }
+            }
         }
-        cellOccupancy[baseLocation].Add(!enemyTile); // true for ally, false for enemy
 
         UpdateDrawGrid();
 	}
 
     /// <summary>
+    /// Check if a color is white or approximately white
+    /// </summary>
+    private bool IsWhite(Color color)
+    {
+        // Check if RGB values are close to 1 and alpha is not transparent
+        float threshold = 0.9f;
+        return color.r >= threshold && color.g >= threshold && color.b >= threshold && color.a > 0.5f;
+    }
+
+    /// <summary>
     /// Looks at the current state of the grid and returns which color the current line is
     /// </summary>
     /// <param name="coords">The coordinate of the line to check</param>
+    /// <param name="isHorizontal">Whether this is a horizontal line</param>
     /// <returns>The state of the line based on occupancy</returns>
-    public LineState GetLineState(Vector2Int coords)
+    public LineState GetLineState(Vector2Int coords, bool isHorizontal)
 	{
-        if (!cellOccupancy.ContainsKey(coords) || cellOccupancy[coords].Count == 0)
+        Dictionary<Vector2Int, HashSet<bool>> targetOccupancy = isHorizontal ? horizontalLineOccupancy : verticalLineOccupancy;
+
+        if (!targetOccupancy.ContainsKey(coords) || targetOccupancy[coords].Count == 0)
         {
             return LineState.empty;
         }
 
-        HashSet<bool> occupants = cellOccupancy[coords];
+        HashSet<bool> occupants = targetOccupancy[coords];
 
         // Check if both allies and enemies occupy this cell
         if (occupants.Contains(true) && occupants.Contains(false))
@@ -234,16 +297,25 @@ public class GridManager : MonoBehaviour
             appliedShapes.Remove(shape);
         }
 
-        // Remove ally occupancy from cells
-        var cellsToUpdate = cellOccupancy.Keys.ToList();
-        foreach (var cell in cellsToUpdate)
+        // Remove ally occupancy from horizontal lines
+        var hCellsToUpdate = horizontalLineOccupancy.Keys.ToList();
+        foreach (var cell in hCellsToUpdate)
         {
-            cellOccupancy[cell].Remove(true); // Remove allies (true)
-
-            // Clean up empty cells
-            if (cellOccupancy[cell].Count == 0)
+            horizontalLineOccupancy[cell].Remove(true); // Remove allies (true)
+            if (horizontalLineOccupancy[cell].Count == 0)
             {
-                cellOccupancy.Remove(cell);
+                horizontalLineOccupancy.Remove(cell);
+            }
+        }
+
+        // Remove ally occupancy from vertical lines
+        var vCellsToUpdate = verticalLineOccupancy.Keys.ToList();
+        foreach (var cell in vCellsToUpdate)
+        {
+            verticalLineOccupancy[cell].Remove(true); // Remove allies (true)
+            if (verticalLineOccupancy[cell].Count == 0)
+            {
+                verticalLineOccupancy.Remove(cell);
             }
         }
 
@@ -262,7 +334,8 @@ public class GridManager : MonoBehaviour
         }
 
         appliedShapes.Clear();
-        cellOccupancy.Clear();
+        horizontalLineOccupancy.Clear();
+        verticalLineOccupancy.Clear();
         UpdateDrawGrid();
 	}
 
@@ -280,7 +353,7 @@ public class GridManager : MonoBehaviour
 
             if (line != null)
             {
-                LineState state = GetLineState(coord);
+                LineState state = GetLineState(coord, true);
                 line.color = GetColorForState(state);
             }
         }
@@ -293,7 +366,7 @@ public class GridManager : MonoBehaviour
 
             if (line != null)
             {
-                LineState state = GetLineState(coord);
+                LineState state = GetLineState(coord, false);
                 line.color = GetColorForState(state);
             }
         }
