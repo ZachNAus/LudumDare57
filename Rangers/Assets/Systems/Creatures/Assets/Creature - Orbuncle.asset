@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13b0b700001ff794e808821bedb1c700, type: 3}
+  m_Name: Creature - Orbuncle
+  m_EditorClassIdentifier: 
+  sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  desc: I'm just a wee lad
+  shapePool:
+  - {fileID: 11400000, guid: 242adb746de3b464d9ce9d135ef8ce05, type: 2}
+  - {fileID: 11400000, guid: 242adb746de3b464d9ce9d135ef8ce05, type: 2}
+  - {fileID: 11400000, guid: 8b825c83b05b05f41ab41b86bde8fe76, type: 2}
+  currentShapePool: []
