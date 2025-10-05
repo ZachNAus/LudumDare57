@@ -21,7 +21,7 @@ public class CreatureData : ScriptableObject
 	public string desc;
 
 	[SerializeField] Vector2 sizeRangeCM = new Vector2(24,56);
-	public float CreatureSize { get; private set; }
+	public int CreatureSize { get; private set; }
 
 	public bool IsBoy { get; private set; }
 
@@ -98,7 +98,7 @@ public class CreatureData : ScriptableObject
 		this.uniqueId = $"Creature {IdsMade}";
 		IdsMade++;
 
-		CreatureSize = Random.Range(sizeRangeCM.x, sizeRangeCM.y);
+		CreatureSize = Mathf.RoundToInt(Random.Range(sizeRangeCM.x, sizeRangeCM.y));
 		IsBoy = Random.value > 0.5f;
 	}
 }
