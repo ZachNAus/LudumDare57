@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13b0b700001ff794e808821bedb1c700, type: 3}
-  m_Name: Creature - Mingorg
+  m_Name: Creature - MingorgT
   m_EditorClassIdentifier: 
   uniqueId: 
   creatureName: Mingorg
@@ -20,9 +20,9 @@ MonoBehaviour:
   healthMaxAlly: 10
   healthMaxEnemy: 10
   enemyShapePool:
-  - {fileID: 11400000, guid: 76421260c1b765e40a093620c7cd7bb1, type: 2}
-  - {fileID: 11400000, guid: 15fd62636bed9c94e8acb121a8276e79, type: 2}
-  - {fileID: 11400000, guid: 40b1080b559597c43845b106f4e5498e, type: 2}
+  - {fileID: 11400000, guid: dbd4276089c6c1941847d58c57ce90e6, type: 2}
+  - {fileID: 11400000, guid: 21d072b8988ffbf40819b627e1b6fd00, type: 2}
+  - {fileID: 11400000, guid: 6d5d6a6e23f6aaf4491175a6df96bfa4, type: 2}
   allyShapePool:
   - {fileID: 11400000, guid: 30ed51f965465d34a9565c6950cba3ee, type: 2}
   - {fileID: 11400000, guid: 39d96f5a98affc6428e502ea761f637b, type: 2}
