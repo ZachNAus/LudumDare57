@@ -8,6 +8,21 @@ using DG.Tweening;
 
 public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+	[SerializeField] Image mainImg;
+	[SerializeField] Image borderImg;
+
+	[SerializeField] ColorSettings mainColor;
+	[SerializeField] ColorSettings greyedColor;
+
+	[System.Serializable]
+	public class ColorSettings
+	{
+		public Color mainColor;
+		public Color borderColor;
+	}
+
+	[Space]
+
 	[SerializeField] Transform shapeHolder;
 
 	[SerializeField] CellFX cellPrefab;
@@ -136,7 +151,6 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 		spawnedLines.Clear();
 	}
 
-
 	private void Awake()
 	{
 		rectTransform = GetComponent<RectTransform>();
@@ -260,5 +274,13 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 		// For odd-sized grids, the center is simply size/2 (integer division)
 		// e.g., 3x3 -> center is (1,1), 5x5 -> center is (2,2), 7x7 -> center is (3,3)
 		return new Vector2Int(gridSize / 2, gridSize / 2);
+	}
+
+	public void SetColors(bool normal)
+	{
+		ColorSettings settings = normal ? mainColor : greyedColor;
+
+		mainImg.color = settings.mainColor;
+		borderImg.color = settings.borderColor;
 	}
 }

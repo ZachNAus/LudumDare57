@@ -58,6 +58,7 @@ public class CreatureUI : MonoBehaviour
 			var inst = Instantiate(attackPrefab, attackHolder.transform);
 
 			inst.Initialise(atk, SelectedAttacks, CurrentCreature.uniqueId);
+			inst.SetColors(true);
 
 			currentShapes.Add(inst);
 		}
@@ -76,14 +77,22 @@ public class CreatureUI : MonoBehaviour
 
 	public void SelectedAttacks()
 	{
-		//Disable any other existing shapes
-
 		foreach (var s in currentShapes)
+		{
 			s.Enabled = false;
+
+			//if the shape is NOT in the grid, call s.SetColor(false);
+			bool shapeIsInGrid = GridManager.instance.IsShapeInGrid(s.currentShape, CurrentCreature.uniqueId);
+			if (!shapeIsInGrid)
+			{
+				s.SetColors(false);
+			}
+		}
 
 		HasSelectedAttacks = true;
 
 		activeAnimator.speed = 1;
+
 	}
 
 	void OnShapeRemoved(ShapeData shape, string creatureUniqueID)
@@ -98,7 +107,11 @@ public class CreatureUI : MonoBehaviour
 	public void DeselectedAttacks()
 	{
 		foreach (var s in currentShapes)
+		{
 			s.Enabled = true;
+
+			s.SetColors(true);
+		}
 
 		HasSelectedAttacks = false;
 
