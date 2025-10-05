@@ -55,7 +55,7 @@ MonoBehaviour:
   startingCreature: {fileID: 11400000, guid: b75cf0df0ccc3c54aa0d6b20f081e319, type: 2}
   firstExpeditionCreatures:
   - {fileID: 11400000, guid: 2b09a920734869443970c6d099027f98, type: 2}
-  - {fileID: 11400000, guid: 2b09a920734869443970c6d099027f98, type: 2}
+  - {fileID: 11400000, guid: d32aff12782ae8e4e9a353e449c753f1, type: 2}
   CombatsDoneThisExpdition: 0
 --- !u!114 &5397129488165258012
 MonoBehaviour:
