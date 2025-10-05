@@ -110,7 +110,14 @@ public class CreatureUI : MonoBehaviour
 		{
 			s.Enabled = true;
 
-			s.SetColors(true);
+			try
+			{
+				s.SetColors(true);
+			} 
+			catch(System.Exception e)
+			{
+				Debug.LogError(e);
+			}
 		}
 
 		HasSelectedAttacks = false;
