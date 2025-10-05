@@ -98,6 +98,8 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
 					// Create the cell
 					Image cell = Instantiate(linePrefab, shapeHolder);
+					cell.GetComponent<Button>().enabled = false;
+
 					RectTransform rect = cell.rectTransform;
 					rect.sizeDelta = new Vector2(cellSize, cellSize);
 					rect.localPosition = cellPos;

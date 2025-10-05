@@ -165,12 +165,12 @@ public class BattleManager : MonoBehaviour
 			if (CurrentAllyHealth <= 0)
 			{
 				//YOU LOSE
-				Application.Quit();
+				GameManager.instance.OnLoseBattle();
 			}
 			else
 			{
 				//YOU WIN
-				Debug.Log("Good shit bithc");
+				GameManager.instance.OnWinBattle();
 			}
 		}
 	}

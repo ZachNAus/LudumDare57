@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour
 		battleManager.SetActive(false);
 
 		//Add guy to team
+		OwnedCreaturePage.instance.AddCreature(CurrentEnemy);
 
 		CurrentWave++;
 	}
@@ -91,5 +92,17 @@ public class GameManager : MonoBehaviour
 	public void Quit()
 	{
 		Application.Quit();
+	}
+
+	public void MainMenu()
+	{
+		StartAgain();
+
+		battleManager.SetActive(false);
+
+		mainMenu.SetActive(true);
+		loseScreen.SetActive(false);
+
+		charSelectScreen.SetActive(false);
 	}
 }
