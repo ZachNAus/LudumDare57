@@ -8,10 +8,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "RANGER/Shape")]
 public class ShapeData : ScriptableObject
 {
-	[Header("IMPORTANT")]
-	public string uniqueID;
-
-
 	[Header("Less important")]
 	[OnValueChanged(nameof(ResizeGrid))]
 	public int gridSize = 8;
