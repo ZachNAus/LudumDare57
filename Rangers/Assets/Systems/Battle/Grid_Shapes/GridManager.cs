@@ -436,6 +436,9 @@ public class GridManager : MonoBehaviour
     /// </summary>
     public void RemoveShapesByCreature(string creatureUniqueID)
 	{
+        if (BattleManager.GameLoading)
+            return;
+
         var shapesToRemove = appliedShapes.Where(kvp => kvp.Value.creatureUniqueID == creatureUniqueID && kvp.Value.allyTile)
             .Select(kvp => kvp.Key)
             .ToList();
@@ -451,6 +454,9 @@ public class GridManager : MonoBehaviour
     /// </summary>
     private void RemoveSingleShape(ShapeData shape)
 	{
+        if (BattleManager.GameLoading)
+            return;
+
         if (!appliedShapes.ContainsKey(shape))
 		{
             Debug.LogWarning("GridManager: Attempted to remove shape that isn't in appliedShapes!");

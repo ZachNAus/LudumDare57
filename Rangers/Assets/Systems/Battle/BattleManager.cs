@@ -156,6 +156,9 @@ public class BattleManager : MonoBehaviour
 
 	public void Go()
 	{
+		if (GameLoading)
+			return;
+
 		//If the players have selected attakcs
 		foreach (var ally in SelectedAllies)
 		{
@@ -168,24 +171,31 @@ public class BattleManager : MonoBehaviour
 
 		CurrentAllyHealth -= CalculateDamageTaken();
 
-		UpdateHealthBars();
 
-		if (CurrentAllyHealth > 0 && CurrentEnemyHealth > 0)
-			EnemyTurn();
-		else
+		GameLoading = true;
+		UpdateHealthBars(false, () => 
 		{
-			if (CurrentAllyHealth <= 0)
-			{
-				//YOU LOSE
-				GameManager.instance.OnLoseBattle();
-			}
+			GameLoading = false;
+
+			if (CurrentAllyHealth > 0 && CurrentEnemyHealth > 0)
+				EnemyTurn();
 			else
 			{
-				//YOU WIN
-				GameManager.instance.OnWinBattle();
+				if (CurrentAllyHealth <= 0)
+				{
+					//YOU LOSE
+					GameManager.instance.OnLoseBattle();
+				}
+				else
+				{
+					//YOU WIN
+					GameManager.instance.OnWinBattle();
+				}
 			}
-		}
+		});
 	}
+
+	public static bool GameLoading;
 
 	float GetDamageDealt()
 	{
@@ -242,19 +252,20 @@ public class BattleManager : MonoBehaviour
 		return totalDamage;
 	}
 
-	void UpdateHealthBars(bool instant = false)
+	void UpdateHealthBars(bool instant = false, System.Action onComplete = null)
 	{
 		if (instant)
 		{
 			allyHealthBar.fillAmount = CurrentAllyHealth / SelectedAllies.Sum(x => x.allyData.healthMaxAlly);
 
 			enemyHealthBar.fillAmount = CurrentEnemyHealth / CurrentEnemy.healthMaxEnemy;
+			onComplete?.Invoke();
 		}
 		else
 		{
 			allyHealthBar.DOFillAmount(CurrentAllyHealth / SelectedAllies.Sum(x => x.allyData.healthMaxAlly), 0.5f);
 
-			enemyHealthBar.DOFillAmount(CurrentEnemyHealth / CurrentEnemy.healthMaxEnemy, 0.5f);
+			enemyHealthBar.DOFillAmount(CurrentEnemyHealth / CurrentEnemy.healthMaxEnemy, 0.5f).OnComplete(() => onComplete?.Invoke());
 		}
 
 		allyCurrentHealth.SetText(CurrentAllyHealth.ToString());

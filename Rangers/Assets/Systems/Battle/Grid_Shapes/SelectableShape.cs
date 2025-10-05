@@ -141,6 +141,9 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 	{
 		rectTransform = GetComponent<RectTransform>();
 		canvas = GetComponentInParent<Canvas>();
+	}
+	void Start()
+	{
 		originPosition = rectTransform.anchoredPosition;
 	}
 

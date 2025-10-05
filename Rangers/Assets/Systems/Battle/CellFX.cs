@@ -52,6 +52,8 @@ public class CellFX : MonoBehaviour
     [Button("Pop")]
     public void PopLine()
 	{
+        transform.DOKill();
+        transform.localScale = Vector3.one;
         transform.DOPunchScale(Vector3.one * popScale, popTime, popvibrato, popelasticity);
 	}
 
