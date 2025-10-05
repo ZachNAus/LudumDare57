@@ -54,6 +54,9 @@ public class BattleManager : MonoBehaviour
 	[SerializeField] TextMeshProUGUI allyDamagePrediction;
 	[SerializeField] TextMeshProUGUI enemyDamagePrediction;
 
+	[SerializeField] TextMeshProUGUI allyCurrentHealth;
+	[SerializeField] TextMeshProUGUI enemyCurrentHealth;
+
 	private void Awake()
 	{
 		goBtn.onClick.AddListener(Go);
@@ -236,6 +239,9 @@ public class BattleManager : MonoBehaviour
 
 			enemyHealthBar.DOFillAmount(CurrentEnemyHealth / CurrentEnemy.healthMaxEnemy, 0.5f);
 		}
+
+		allyCurrentHealth.SetText(CurrentAllyHealth.ToString());
+		enemyCurrentHealth.SetText(CurrentEnemyHealth.ToString());
 	}
 
 	public void SetActive(bool value)

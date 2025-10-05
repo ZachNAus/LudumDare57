@@ -896,6 +896,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1805308913}
     m_Modifications:
+    - target: {fileID: 2259321177604419934, guid: e2c3ecd8ce860944cbdf32799564eb72, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259321177604419934, guid: e2c3ecd8ce860944cbdf32799564eb72, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259321177604419934, guid: e2c3ecd8ce860944cbdf32799564eb72, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -47
+      objectReference: {fileID: 0}
     - target: {fileID: 2869737135975657591, guid: e2c3ecd8ce860944cbdf32799564eb72, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -979,6 +991,18 @@ PrefabInstance:
     - target: {fileID: 2916486130182185603, guid: e2c3ecd8ce860944cbdf32799564eb72, type: 3}
       propertyPath: m_Name
       value: Char Select Screen
+      objectReference: {fileID: 0}
+    - target: {fileID: 2916486130182185603, guid: e2c3ecd8ce860944cbdf32799564eb72, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4357597456404187181, guid: e2c3ecd8ce860944cbdf32799564eb72, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4357597456404187181, guid: e2c3ecd8ce860944cbdf32799564eb72, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
