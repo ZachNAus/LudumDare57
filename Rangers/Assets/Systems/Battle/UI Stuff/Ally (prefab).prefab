@@ -192,7 +192,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Orbuncle
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 94c3cecb89414654886c1768c772c1b9, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c738cafd376063f45ae89e501826b6aa, type: 2}
   m_sharedMaterial: {fileID: -5953295798904803294, guid: c738cafd376063f45ae89e501826b6aa, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
