@@ -23,8 +23,14 @@ public class CreatureUI : MonoBehaviour
 	private void Awake()
 	{
 		btn.onClick.AddListener(RemoveShapeFromThisCreature);
+		GridManager.OnAllTilesCleared -= StopAnimator;
+		GridManager.OnAllTilesCleared += StopAnimator;
 	}
-	
+	private void OnDestroy()
+	{
+		GridManager.OnAllTilesCleared -= StopAnimator;
+	}
+
 
 	public void Initialise(CreatureData creatureInst)
 	{
@@ -96,6 +102,12 @@ public class CreatureUI : MonoBehaviour
 
 		HasSelectedAttacks = false;
 
+		if(activeAnimator != null)
+			activeAnimator.speed = 0;
+	}
+
+	void StopAnimator()
+	{
 		activeAnimator.speed = 0;
 	}
 
