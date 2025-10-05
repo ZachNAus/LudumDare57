@@ -17,8 +17,8 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 22120e5ffe73edf42afd6a849ef09b76, type: 3}
   desc: Short for mineral gorgon
   sizeRangeCM: {x: 24, y: 56}
-  healthMaxAlly: 10
-  healthMaxEnemy: 10
+  healthMaxAlly: 50
+  healthMaxEnemy: 150
   enemyShapePool:
   - {fileID: 11400000, guid: 76421260c1b765e40a093620c7cd7bb1, type: 2}
   - {fileID: 11400000, guid: 15fd62636bed9c94e8acb121a8276e79, type: 2}
