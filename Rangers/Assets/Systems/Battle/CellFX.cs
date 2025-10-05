@@ -10,6 +10,7 @@ public class CellFX : MonoBehaviour
     [SerializeField] Button btn;
 
     [SerializeField] Image img;
+    [SerializeField] Image edgeImg;
 
     [Space]
     [SerializeField] float popScale = 1.1f;
@@ -24,7 +25,10 @@ public class CellFX : MonoBehaviour
 
     public void SetColor(Color col)
 	{
-        img.color = col;
+        edgeImg.color = col;
+        Color fillCol = new Color(col.r, col.g, col.b, 0.3f);
+        img.color = fillCol;
+        
     }
 
     public void Initialise(Vector2Int coordinate)
