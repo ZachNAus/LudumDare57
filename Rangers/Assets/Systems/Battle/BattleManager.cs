@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -48,6 +49,11 @@ public class BattleManager : MonoBehaviour
 
 	[SerializeField] Button goBtn;
 
+	[Space]
+
+	[SerializeField] TextMeshProUGUI allyDamagePrediction;
+	[SerializeField] TextMeshProUGUI enemyDamagePrediction;
+
 	private void Awake()
 	{
 		goBtn.onClick.AddListener(Go);
@@ -55,15 +61,9 @@ public class BattleManager : MonoBehaviour
 		SetActive(false);
 	}
 
-	[Header("Testing")]
-	[SerializeField]
-	CreatureData testEnemy;
-	[SerializeField]
-	List<CreatureData> testAllies;
-	[Button]
-	public void InitWithCurrent()
+	private void Start()
 	{
-		Init(testEnemy, testAllies);
+		GridManager.instance.OnGridUpdated += OnBoardUpdated;
 	}
 
 	public void Init(CreatureData enemy, List<CreatureData> allies)
@@ -150,11 +150,9 @@ public class BattleManager : MonoBehaviour
 		}
 
 		//Do damage calculation
-		var damageToDeal = GridManager.instance.GetAllCellsInState(GridManager.CellState.ally);
-		CurrentEnemyHealth -= damageToDeal.Count;
+		CurrentEnemyHealth -= GetDamageDealt();
 
-		var damageToTake = GridManager.instance.GetAllCellsInState(GridManager.CellState.enemy);
-		CurrentAllyHealth -= CalculateDamageTaken(damageToTake);
+		CurrentAllyHealth -= CalculateDamageTaken();
 
 		UpdateHealthBars();
 
@@ -175,8 +173,15 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
-	float CalculateDamageTaken(List<CellFX> cells)
+	float GetDamageDealt()
 	{
+		return GridManager.instance.GetAllCellsInState(GridManager.CellState.ally).Count;
+	}
+
+	float CalculateDamageTaken()
+	{
+		List<CellFX> cells = GridManager.instance.GetAllCellsInState(GridManager.CellState.enemy);
+
 		float totalDamage = 0;
 
 		foreach (var cell in cells)
@@ -236,5 +241,11 @@ public class BattleManager : MonoBehaviour
 	public void SetActive(bool value)
 	{
 		container.SetActive(value);
+	}
+
+	public void OnBoardUpdated()
+	{
+		allyDamagePrediction.SetText(GetDamageDealt().ToString());
+		enemyDamagePrediction.SetText(CalculateDamageTaken().ToString());
 	}
 }

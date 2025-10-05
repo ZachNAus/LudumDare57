@@ -503,6 +503,8 @@ public class GridManager : MonoBehaviour
         }
 	}
 
+    public event System.Action OnGridUpdated;
+
     /// <summary>
     /// Update the UI to match what the current grid should look like
     /// </summary>
@@ -527,5 +529,7 @@ public class GridManager : MonoBehaviour
                 }
             }
         }
-	}
+
+        OnGridUpdated?.Invoke();
+    }
 }

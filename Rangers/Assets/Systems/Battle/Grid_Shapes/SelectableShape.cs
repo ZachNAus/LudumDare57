@@ -10,11 +10,9 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 {
 	[SerializeField] Transform shapeHolder;
 
-	[SerializeField] Image linePrefab;
+	[SerializeField] CellFX cellPrefab;
 
-	[SerializeField] private Color previewColor = Color.white;
-
-	private List<Image> spawnedLines = new List<Image>();
+	private List<CellFX> spawnedLines = new List<CellFX>();
 
 	private Vector3 originPosition;
 	private Vector3 originalHolderScale;
@@ -114,13 +112,12 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 					Vector2 cellPos = new Vector2(x * cellSize, y * cellSize) + centerOffset;
 
 					// Create the cell
-					Image cell = Instantiate(linePrefab, shapeHolder);
+					CellFX cell = Instantiate(cellPrefab, shapeHolder);
 					cell.GetComponent<Button>().enabled = false;
 
 					RectTransform rect = cell.rectTransform;
 					rect.sizeDelta = new Vector2(cellSize, cellSize);
 					rect.localPosition = cellPos;
-					cell.color = previewColor;
 					cell.name = $"Cell ({x},{y})";
 
 					spawnedLines.Add(cell);
