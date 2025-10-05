@@ -12,16 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13b0b700001ff794e808821bedb1c700, type: 3}
   m_Name: Creature - Mingorg
   m_EditorClassIdentifier: 
+  uniqueId: 
   creatureName: Mingorg
-  sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  sprite: {fileID: 21300000, guid: 22120e5ffe73edf42afd6a849ef09b76, type: 3}
   desc: ROCKS
+  sizeRangeCM: {x: 24, y: 56}
   healthMaxAlly: 10
   healthMaxEnemy: 10
   enemyShapePool:
   - {fileID: 11400000, guid: 3b94c0a971e9f35469680cd98dc6a98a, type: 2}
   allyShapePool:
-  - {fileID: 11400000, guid: 8335b0e0fc862624b9f3f65b44e2e83a, type: 2}
-  - {fileID: 11400000, guid: f7a80b61b52641e4f9be908d333c9f23, type: 2}
-  - {fileID: 11400000, guid: 8335b0e0fc862624b9f3f65b44e2e83a, type: 2}
-  - {fileID: 11400000, guid: 3b94c0a971e9f35469680cd98dc6a98a, type: 2}
+  - {fileID: 11400000, guid: 30ed51f965465d34a9565c6950cba3ee, type: 2}
+  - {fileID: 11400000, guid: 39d96f5a98affc6428e502ea761f637b, type: 2}
+  - {fileID: 11400000, guid: 21a9b670770909848a82e86217eaa473, type: 2}
+  - {fileID: 11400000, guid: a3321067e6c348e4bb3a5d0ba3996b9c, type: 2}
+  - {fileID: 11400000, guid: 130cf2cc491a12148a417edc229bf6f0, type: 2}
+  - {fileID: 11400000, guid: c5e9fb9bc8110ae49b24b740f43993e4, type: 2}
   currentShapePool: []

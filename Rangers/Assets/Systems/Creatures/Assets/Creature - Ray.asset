@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13b0b700001ff794e808821bedb1c700, type: 3}
-  m_Name: Creature - Orbuncle
+  m_Name: Creature - Ray
   m_EditorClassIdentifier: 
   uniqueId: 
   creatureName: Orbuncle
