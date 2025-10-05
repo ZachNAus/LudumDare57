@@ -16,9 +16,9 @@ MonoBehaviour:
   sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   desc: ROCKS
   healthMaxAlly: 10
-  healthMaxEnemy: 50
+  healthMaxEnemy: 10
   enemyShapePool:
-  - {fileID: 11400000, guid: 7d1cc8460f345664da59d2c496d75ca4, type: 2}
+  - {fileID: 11400000, guid: 3b94c0a971e9f35469680cd98dc6a98a, type: 2}
   allyShapePool:
   - {fileID: 11400000, guid: 8335b0e0fc862624b9f3f65b44e2e83a, type: 2}
   - {fileID: 11400000, guid: f7a80b61b52641e4f9be908d333c9f23, type: 2}

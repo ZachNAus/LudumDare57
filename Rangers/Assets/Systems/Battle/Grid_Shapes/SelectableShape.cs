@@ -24,19 +24,36 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 	private Transform originalParent;
 	private Vector2 originalPivot;
 	public ShapeData currentShape { get; private set; }
+	private string creatureUniqueID;
 
-	public bool Enabled = true;
+	private bool isEnabled = true;
+	public bool Enabled
+	{
+		get => isEnabled;
+		set
+		{
+			isEnabled = value;
+		}
+	}
+
+	public void SetNotInteractable()
+	{
+		Enabled = false;
+
+		GetComponent<CanvasGroup>().interactable = false;
+	}
 
 	System.Action OnSelected;
 
 	[Button]
-	public void Initialise(ShapeData shape, System.Action onSelected)
+	public void Initialise(ShapeData shape, System.Action onSelected, string creatureID = "")
 	{
 		OnSelected = onSelected;
 
 		Enabled = true;
 
 		currentShape = shape;
+		creatureUniqueID = creatureID;
 
 		// Clear existing preview
 		ClearPreview();
@@ -201,7 +218,7 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 				Debug.Log($"Cell under mouse: {cellUnderMouse.GridCoordinate}, Shape center: {shapeCenter}, Base position: {basePosition}");
 
 				// Place the shape on the grid
-				GridManager.instance.AddShape(currentShape, basePosition, false); // false = ally
+				GridManager.instance.AddShape(currentShape, basePosition, false, creatureUniqueID); // false = ally
 				placedOnGrid = true;
 			}
 		}

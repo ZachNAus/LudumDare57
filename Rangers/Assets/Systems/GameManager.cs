@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
 		CurrentEnemy = possibleEnemiesPerWave[CurrentWave].possibleEnemies.GetRandom();
 
 		mainMenu.SetActive(false);
+		winScreen.SetActive(false);
 		charSelectScreen.SetActive(true);
 	}
 	

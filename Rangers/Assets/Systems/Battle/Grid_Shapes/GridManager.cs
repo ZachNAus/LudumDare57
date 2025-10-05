@@ -71,6 +71,7 @@ public class GridManager : MonoBehaviour
 	{
         public Vector2Int basePosition;
         public bool allyTile;
+        public string creatureUniqueID;
 	}
 
     private void Awake()
@@ -172,7 +173,7 @@ public class GridManager : MonoBehaviour
 	}
 
     [Button("Add shape")]
-    public void AddShape(ShapeData shape, Vector2Int baseLocation, bool enemyTile)
+    public void AddShape(ShapeData shape, Vector2Int baseLocation, bool enemyTile, string creatureUniqueID = "")
 	{
         var inst = Instantiate(shape);
 
@@ -186,7 +187,8 @@ public class GridManager : MonoBehaviour
         appliedShapes[inst] = new AppliedShapeData
         {
             basePosition = baseLocation,
-            allyTile = !enemyTile
+            allyTile = !enemyTile,
+            creatureUniqueID = creatureUniqueID
         };
 
         // Track updated cells for pop effect
@@ -424,7 +426,7 @@ public class GridManager : MonoBehaviour
 		}
 	}
 
-    public static event System.Action<ShapeData> OnShapeRemoved;
+    public static event System.Action<ShapeData, string> OnShapeRemoved;
 
     /// <summary>
     /// Remove a single shape from the grid
@@ -481,10 +483,11 @@ public class GridManager : MonoBehaviour
 		}
 
         // Remove from appliedShapes and destroy the object
+        string creatureID = shapeData.creatureUniqueID;
         appliedShapes.Remove(shape);
 
         //Send an event out
-        OnShapeRemoved?.Invoke(shape);
+        OnShapeRemoved?.Invoke(shape, creatureID);
 
         Destroy(shape);
 

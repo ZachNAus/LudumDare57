@@ -39,7 +39,7 @@ public class CreatureUI : MonoBehaviour
 
 			var inst = Instantiate(attackPrefab, attackHolder.transform);
 
-			inst.Initialise(atk, SelectedAttacks);
+			inst.Initialise(atk, SelectedAttacks, CurrentCreature.uniqueId);
 
 			currentShapes.Add(inst);
 		}
@@ -66,16 +66,12 @@ public class CreatureUI : MonoBehaviour
 		HasSelectedAttacks = true;
 	}
 
-	void OnShapeRemoved(ShapeData shape)
+	void OnShapeRemoved(ShapeData shape, string creatureUniqueID)
 	{
-		foreach (var s in currentShapes)
+		// Only deselect attacks if the removed shape was placed by this creature
+		if (CurrentCreature.uniqueId == creatureUniqueID)
 		{
-			if (s.currentShape.uniqueID == shape.uniqueID)
-			{
-				DeselectedAttacks();
-
-				return;
-			}
+			DeselectedAttacks();
 		}
 	}
 

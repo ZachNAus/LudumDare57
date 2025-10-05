@@ -35,9 +35,13 @@ public class OwnedCreaturePage : MonoBehaviour
 		OwnedCreaturesThisRun.Clear();
 	}
 
+	int currentId;
 	public void AddCreature(CreatureData capturedCreature)
 	{
 		var inst = Instantiate(capturedCreature);
+
+		inst.uniqueId = $"Creature {currentId}";
+		currentId++;
 
 		inst.EmptyPool();
 

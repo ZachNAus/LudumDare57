@@ -39,7 +39,7 @@ public class SelectableAllyUI : MonoBehaviour
 			var inst = Instantiate(shapePrefab, atkHolder);
 
 			inst.Initialise(atk, null);
-			inst.Enabled = false;
+			inst.SetNotInteractable();
 		}
 	}
 

@@ -7,6 +7,11 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "RANGER/Creature")]
 public class CreatureData : ScriptableObject
 {
+	[ReadOnly]
+	public string uniqueId;
+	
+	[Space]
+
 	public string creatureName;
 
 	public Sprite sprite;
