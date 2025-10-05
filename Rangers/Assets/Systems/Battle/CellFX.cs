@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LineFX : MonoBehaviour
+public class CellFX : MonoBehaviour
 {
     [SerializeField] Button btn;
 
@@ -19,13 +19,17 @@ public class LineFX : MonoBehaviour
 
     public RectTransform rectTransform => transform as RectTransform;
 
+    [ReadOnly][SerializeField] private Vector2Int gridCoordinate;
+    public Vector2Int GridCoordinate => gridCoordinate;
+
     public void SetColor(Color col)
 	{
         img.color = col;
     }
 
-    public void Initialise()
+    public void Initialise(Vector2Int coordinate)
 	{
+        gridCoordinate = coordinate;
         btn.onClick.AddListener(OnClick);
 	}
 
@@ -33,7 +37,7 @@ public class LineFX : MonoBehaviour
 	{
         if (GridManager.instance != null)
 		{
-            GridManager.instance.OnLineClicked(this);
+            GridManager.instance.OnCellClicked(this);
 		}
 	}
 

@@ -11,7 +11,15 @@ public class BattleManager : MonoBehaviour
     public CreatureData CurrentEnemy;
 
     [ReadOnly]
-    public List<CreatureData> SelectedAllies;
+    public List<CreatureInfo> SelectedAllies;
+
+    [System.Serializable]
+    public class CreatureInfo
+	{
+        public CreatureData allyData;
+
+        public CreatureUI allyUI;
+	}
 
     [Space]
     
@@ -23,26 +31,70 @@ public class BattleManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] Image allyHealthBar;
     [SerializeField] Image enemyHealthBar;
-    
+
     [Space]
 
-    [SerializeField] GameObject creatureStuff;
+    [SerializeField] Image enemySprite;
+
+    [SerializeField] Transform allyHolder;
+    [SerializeField] CreatureUI allyPrefab;
+
+    [Space]
+
+    [SerializeField] Button goBtn;
+
+	private void Awake()
+	{
+        goBtn.onClick.AddListener(Go);
+    }
+
+    [Header("Testing")]
+    [SerializeField]
+    CreatureData testEnemy;
+    [SerializeField]
+    List<CreatureData> testAllies;
+    [Button]
+    public void InitWithCurrent()
+	{
+        Init(testEnemy, testAllies);
+	}
 
 	public void Init(CreatureData enemy, List<CreatureData> allies)
 	{
-        CurrentEnemy = enemy;
+        if (CurrentEnemy)
+            Destroy(CurrentEnemy);
+
+        foreach(var ally in SelectedAllies)
+		{
+            if (ally != null)
+                Destroy(ally.allyData);
+		}
+
+        CurrentEnemy = Instantiate(enemy);
         CurrentEnemyHealth = enemy.healthMaxEnemy;
-        CurrentEnemy.FillPool(true);
 
+        enemySprite.sprite = enemy.sprite;
 
-        SelectedAllies = new List<CreatureData>();
+        allyHolder.DestroyAllChildren();
+
+        SelectedAllies = new List<CreatureInfo>();
         foreach(var ally in allies)
 		{
-            SelectedAllies.Add(ally);
-            ally.FillPool(false);
-        }
-        CurrentAllyHealth = SelectedAllies.Sum(x => x.healthMaxAlly);
+            var info = new CreatureInfo();
 
+            info.allyData = Instantiate(ally);
+
+            var inst = Instantiate(allyPrefab, allyHolder);
+            inst.Initialise(ally);
+
+            info.allyUI = inst;
+
+            SelectedAllies.Add(info);
+        }
+
+        CurrentAllyHealth = SelectedAllies.Sum(x => x.allyData.healthMaxAlly);
+
+        UpdateHealthBars(true);
 
         EnemyTurn();
     }
@@ -53,16 +105,9 @@ public class BattleManager : MonoBehaviour
 
         GridManager.instance.ClearAllTiles();
 
-        var shape = CurrentEnemy.currentShapePool.GetRandom();
 
-        CurrentEnemy.currentShapePool.Remove(shape);
-        if(CurrentEnemy.currentShapePool.Count == 0)
-		{
-            CurrentEnemy.FillPool(true);
-		}
-
-        Vector2Int pos = new Vector2Int(GridManager.instance.GridSize, GridManager.instance.GridSize);
-        GridManager.instance.AddShape(shape, pos, true);
+        Vector2Int pos = new Vector2Int(0,0/*GridManager.instance.GridSize/4, GridManager.instance.GridSize/4*/);
+        GridManager.instance.AddShape(CurrentEnemy.GetRandomAttack(true), pos, true);
 
         PlayerTurnInit();
     }
@@ -73,23 +118,28 @@ public class BattleManager : MonoBehaviour
 
         foreach(var ally in SelectedAllies)
 		{
+            var atks = new List<ShapeData>();
+
             //Pick 2 attacks from their pool and spawn them
             for(int i = 0; i < 2; i++)
 			{
-                var atk = ally.currentShapePool.GetRandom();
-
-                ally.currentShapePool.Remove(atk);
-
-                if (ally.currentShapePool.Count == 0)
-                    ally.FillPool(false);
-
                 //Create card for the attack
-			}
+                atks.Add(ally.allyData.GetRandomAttack(false));
+            }
+
+            ally.allyUI.SetAttacks(atks);
 		}
 	}
 
     public void Go()
 	{
+        //If the players have selected attakcs
+        foreach(var ally in SelectedAllies)
+		{
+            if (ally.allyUI.HasSelectedAttacks == false)
+                return;
+		}
+
         //Do damage calculation
         UpdateHealthBars();
 
@@ -115,11 +165,11 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
-    void UpdateHealthBars()
+    void UpdateHealthBars(bool instant = false)
 	{
         //Consider a tween?
 
-        allyHealthBar.fillAmount = CurrentAllyHealth / SelectedAllies.Sum(x => x.healthMaxAlly);
+        allyHealthBar.fillAmount = CurrentAllyHealth / SelectedAllies.Sum(x => x.allyData.healthMaxAlly);
 
         enemyHealthBar.fillAmount = CurrentEnemyHealth / CurrentEnemy.healthMaxEnemy;
 	}

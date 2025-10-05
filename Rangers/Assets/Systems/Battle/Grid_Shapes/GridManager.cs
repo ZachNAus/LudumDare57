@@ -9,7 +9,7 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager instance;
 
-    public enum LineState
+    public enum CellState
 	{
         empty,
         ally,
@@ -20,16 +20,16 @@ public class GridManager : MonoBehaviour
     [Title("Grid Configuration")]
     [SerializeField] private Vector2Int gridSize = new Vector2Int(15, 15);
     public int GridSize => gridSize.x;
-    [SerializeField] private float lineThickness = 3f;
     [SerializeField] private float padding = 10f;
 
     [ReadOnly][SerializeField] private float cellSize;
+    public float CellSize => cellSize;
 
     [Title("UI References")]
     [SerializeField] private RectTransform gridContainer;
-    [SerializeField] private LineFX linePrefab;
+    [SerializeField] private CellFX cellPrefab;
 
-    [Title("Line Colors")]
+    [Title("Cell Colors")]
     [SerializeField] private Color emptyColor = Color.gray;
     [SerializeField] private Color allyColor = Color.blue;
     [SerializeField] private Color enemyColor = Color.red;
@@ -41,14 +41,31 @@ public class GridManager : MonoBehaviour
     [System.Serializable]
     class AppliedShapeDict : SerializableDictionary<ShapeData, AppliedShapeData> { }
 
-    // Grid state tracking - separate for horizontal and vertical lines
+    // Grid state tracking - cell occupancy
     // Dictionary maps: coordinate -> (isAlly -> count)
-    private Dictionary<Vector2Int, Dictionary<bool, int>> horizontalLineOccupancy = new Dictionary<Vector2Int, Dictionary<bool, int>>();
-    private Dictionary<Vector2Int, Dictionary<bool, int>> verticalLineOccupancy = new Dictionary<Vector2Int, Dictionary<bool, int>>();
+    private Dictionary<Vector2Int, Dictionary<bool, int>> cellOccupancy = new Dictionary<Vector2Int, Dictionary<bool, int>>();
 
-    // UI line references
-    private Dictionary<Vector2Int, LineFX> horizontalLines = new Dictionary<Vector2Int, LineFX>();
-    private Dictionary<Vector2Int, LineFX> verticalLines = new Dictionary<Vector2Int, LineFX>();
+    // UI cell references
+    private Dictionary<Vector2Int, CellFX> cells = new Dictionary<Vector2Int, CellFX>();
+
+    /// <summary>
+    /// Get the cell at a world position (returns null if not over any cell)
+    /// </summary>
+    public CellFX GetCellAtWorldPosition(Vector3 worldPosition)
+	{
+        foreach (var kvp in cells)
+		{
+            CellFX cell = kvp.Value;
+            if (cell != null && RectTransformUtility.RectangleContainsScreenPoint(
+                cell.rectTransform,
+                worldPosition,
+                GetComponentInParent<Canvas>().renderMode == RenderMode.ScreenSpaceOverlay ? null : GetComponentInParent<Canvas>().worldCamera))
+			{
+                return cell;
+			}
+		}
+        return null;
+	}
 
     struct AppliedShapeData
 	{
@@ -74,23 +91,21 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Initialize the grid and spawn all UI lines
+    /// Initialize the grid and spawn all UI cells
     /// </summary>
     [Button("Initialize Grid")]
     private void InitializeGrid()
     {
-        if (gridContainer == null || linePrefab == null)
+        if (gridContainer == null || cellPrefab == null)
         {
-            Debug.LogError("GridManager: Missing grid container or line prefab!");
+            Debug.LogError("GridManager: Missing grid container or cell prefab!");
             return;
         }
 
-        // Clear existing lines
+        // Clear existing cells
         gridContainer.DestroyAllChildren();
-        horizontalLines.Clear();
-        verticalLines.Clear();
-        horizontalLineOccupancy.Clear();
-        verticalLineOccupancy.Clear();
+        cells.Clear();
+        cellOccupancy.Clear();
 
         // Get grid container dimensions with padding
         float availableWidth = gridContainer.rect.width - (padding * 2);
@@ -102,25 +117,14 @@ public class GridManager : MonoBehaviour
         float gridWidth = gridSize.x * cellSize;
         float gridHeight = gridSize.y * cellSize;
 
-        // Create horizontal lines (rows)
-        for (int y = 0; y <= gridSize.y; y++)
+        // Create cells
+        for (int y = 0; y < gridSize.y; y++)
         {
             for (int x = 0; x < gridSize.x; x++)
             {
                 Vector2Int coord = new Vector2Int(x, y);
-                LineFX line = CreateLine(true, x, y, gridWidth, gridHeight);
-                horizontalLines[coord] = line;
-            }
-        }
-
-        // Create vertical lines (columns)
-        for (int x = 0; x <= gridSize.x; x++)
-        {
-            for (int y = 0; y < gridSize.y; y++)
-            {
-                Vector2Int coord = new Vector2Int(x, y);
-                LineFX line = CreateLine(false, x, y, gridWidth, gridHeight);
-                verticalLines[coord] = line;
+                CellFX cell = CreateCell(x, y, gridWidth, gridHeight);
+                cells[coord] = cell;
             }
         }
 
@@ -128,35 +132,25 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Create a single line UI element
+    /// Create a single cell UI element
     /// </summary>
-    private LineFX CreateLine(bool isHorizontal, int x, int y, float gridWidth, float gridHeight)
+    private CellFX CreateCell(int x, int y, float gridWidth, float gridHeight)
     {
-        LineFX line = Instantiate(linePrefab, gridContainer);
-        RectTransform rect = line.rectTransform;
+        CellFX cell = Instantiate(cellPrefab, gridContainer);
+        RectTransform rect = cell.rectTransform;
 
-        if (isHorizontal)
-        {
-            // Horizontal line - extend by half thickness on each end
-            rect.sizeDelta = new Vector2(cellSize + lineThickness, lineThickness);
-            float posX = (x * cellSize) - (gridWidth / 2f) + (cellSize / 2f);
-            float posY = (y * cellSize) - (gridHeight / 2f);
-            rect.anchoredPosition = new Vector2(posX, posY);
-            line.name = $"H_Line ({x},{y})";
-        }
-        else
-        {
-            // Vertical line - extend by half thickness on each end
-            rect.sizeDelta = new Vector2(lineThickness, cellSize + lineThickness);
-            float posX = (x * cellSize) - (gridWidth / 2f);
-            float posY = (y * cellSize) - (gridHeight / 2f) + (cellSize / 2f);
-            rect.anchoredPosition = new Vector2(posX, posY);
-            line.name = $"V_Line ({x},{y})";
-        }
+        // Set cell size
+        rect.sizeDelta = new Vector2(cellSize, cellSize);
 
-        line.SetColor(emptyColor);
-        line.Initialise();
-        return line;
+        // Position cell (centered grid)
+        float posX = (x * cellSize) - (gridWidth / 2f) + (cellSize / 2f);
+        float posY = (y * cellSize) - (gridHeight / 2f) + (cellSize / 2f);
+        rect.anchoredPosition = new Vector2(posX, posY);
+
+        cell.name = $"Cell ({x},{y})";
+        cell.SetColor(emptyColor);
+        cell.Initialise(new Vector2Int(x, y));
+        return cell;
     }
 
     [Button("Add shape")]
@@ -177,10 +171,10 @@ public class GridManager : MonoBehaviour
             allyTile = !enemyTile
         };
 
-        // Track updated lines for pop effect
-        HashSet<(Vector2Int coord, bool isHorizontal)> updatedLines = new HashSet<(Vector2Int, bool)>();
+        // Track updated cells for pop effect
+        HashSet<Vector2Int> updatedCells = new HashSet<Vector2Int>();
 
-        // Read the gridWrapper from the shape and mark white tiles as occupied
+        // Read the gridWrapper from the shape and mark non-transparent cells as occupied
         var gridWrapper = inst.GridWrapper;
         if (gridWrapper != null && gridWrapper.rows != null)
         {
@@ -188,32 +182,28 @@ public class GridManager : MonoBehaviour
             {
                 for (int x = 0; x < gridWrapper.rows[y].colors.Count; x++)
                 {
-                    if (ShouldSkipCell(x, y))
-                        continue;
-
                     Color cellColor = gridWrapper.rows[y].colors[x];
 
-                    if (IsWhite(cellColor))
+                    // Only process cells that are not transparent
+                    if (cellColor.a > 0.5f)
                     {
-                        bool isHorizontal;
-                        Vector2Int lineCoord = MapShapePositionToLineCoord(x, y, out isHorizontal);
-                        Vector2Int finalCoord = baseLocation + lineCoord;
+                        Vector2Int cellCoord = new Vector2Int(x, y);
+                        Vector2Int finalCoord = baseLocation + cellCoord;
 
-                        // Mark line as occupied in the correct dictionary
-                        Dictionary<Vector2Int, Dictionary<bool, int>> targetOccupancy = isHorizontal ? horizontalLineOccupancy : verticalLineOccupancy;
-                        if (!targetOccupancy.ContainsKey(finalCoord))
+                        // Mark cell as occupied
+                        if (!cellOccupancy.ContainsKey(finalCoord))
                         {
-                            targetOccupancy[finalCoord] = new Dictionary<bool, int>();
+                            cellOccupancy[finalCoord] = new Dictionary<bool, int>();
                         }
                         bool isAllyShape = !enemyTile;
-                        if (!targetOccupancy[finalCoord].ContainsKey(isAllyShape))
+                        if (!cellOccupancy[finalCoord].ContainsKey(isAllyShape))
                         {
-                            targetOccupancy[finalCoord][isAllyShape] = 0;
+                            cellOccupancy[finalCoord][isAllyShape] = 0;
                         }
-                        targetOccupancy[finalCoord][isAllyShape]++;
+                        cellOccupancy[finalCoord][isAllyShape]++;
 
-                        // Track this line for pop effect
-                        updatedLines.Add((finalCoord, isHorizontal));
+                        // Track this cell for pop effect
+                        updatedCells.Add(finalCoord);
                     }
                 }
             }
@@ -221,117 +211,66 @@ public class GridManager : MonoBehaviour
 
         UpdateDrawGrid();
 
-        // Pop all updated lines
-        foreach (var (coord, isHorizontal) in updatedLines)
+        // Pop all updated cells
+        foreach (var coord in updatedCells)
         {
-            Dictionary<Vector2Int, LineFX> targetLines = isHorizontal ? horizontalLines : verticalLines;
-            if (targetLines.TryGetValue(coord, out LineFX line) && line != null)
+            if (cells.TryGetValue(coord, out CellFX cell) && cell != null)
             {
-                line.PopLine();
+                cell.PopLine();
             }
         }
 	}
 
     /// <summary>
-    /// Check if a color is white or approximately white
+    /// Looks at the current state of the grid and returns which color the current cell is
     /// </summary>
-    private bool IsWhite(Color color)
-    {
-        // Check if RGB values are close to 1 and alpha is not transparent
-        float threshold = 0.9f;
-        return color.r >= threshold && color.g >= threshold && color.b >= threshold && color.a > 0.5f;
-    }
-
-    /// <summary>
-    /// Map shape grid position (x, y) to line coordinates
-    /// </summary>
-    /// <param name="x">X position in shape grid</param>
-    /// <param name="y">Y position in shape grid</param>
-    /// <param name="isHorizontal">Output: whether this is a horizontal line</param>
-    /// <returns>The line coordinate in the shape's local space</returns>
-    private Vector2Int MapShapePositionToLineCoord(int x, int y, out bool isHorizontal)
+    /// <param name="coords">The coordinate of the cell to check</param>
+    /// <returns>The state of the cell based on occupancy</returns>
+    public CellState GetCellState(Vector2Int coords)
 	{
-        if (x % 2 == 0 && y % 2 == 0)
-		{
-            // Even x, Even y → Vertical line
-            isHorizontal = false;
-            return new Vector2Int(x / 2, y / 2);
-		}
-        else if (x % 2 == 1 && y % 2 == 0)
-		{
-            // Odd x, Even y → Horizontal line (top edge of cell)
-            isHorizontal = true;
-            return new Vector2Int((x - 1) / 2, y / 2);
-		}
-        else // (x % 2 == 0 && y % 2 == 1)
-		{
-            // Even x, Odd y → Vertical line (between columns)
-            isHorizontal = false;
-            return new Vector2Int(x / 2, (y - 1) / 2);
-		}
-	}
-
-    /// <summary>
-    /// Check if a cell should be skipped (green cells)
-    /// </summary>
-    private bool ShouldSkipCell(int x, int y)
-	{
-        return (x % 2 == 1 && y % 2 == 1) || (x % 2 == 0 && y % 2 == 0);
-	}
-
-    /// <summary>
-    /// Looks at the current state of the grid and returns which color the current line is
-    /// </summary>
-    /// <param name="coords">The coordinate of the line to check</param>
-    /// <param name="isHorizontal">Whether this is a horizontal line</param>
-    /// <returns>The state of the line based on occupancy</returns>
-    public LineState GetLineState(Vector2Int coords, bool isHorizontal)
-	{
-        Dictionary<Vector2Int, Dictionary<bool, int>> targetOccupancy = isHorizontal ? horizontalLineOccupancy : verticalLineOccupancy;
-
-        if (!targetOccupancy.ContainsKey(coords) || targetOccupancy[coords].Count == 0)
+        if (!cellOccupancy.ContainsKey(coords) || cellOccupancy[coords].Count == 0)
         {
-            return LineState.empty;
+            return CellState.empty;
         }
 
-        Dictionary<bool, int> occupants = targetOccupancy[coords];
+        Dictionary<bool, int> occupants = cellOccupancy[coords];
 
         bool hasAllies = occupants.ContainsKey(true) && occupants[true] > 0;
         bool hasEnemies = occupants.ContainsKey(false) && occupants[false] > 0;
 
-        // Check if both allies and enemies occupy this line
+        // Check if both allies and enemies occupy this cell
         if (hasAllies && hasEnemies)
         {
-            return LineState.clash;
+            return CellState.clash;
         }
         // Only allies
         else if (hasAllies)
         {
-            return LineState.ally;
+            return CellState.ally;
         }
         // Only enemies
         else if (hasEnemies)
         {
-            return LineState.enemy;
+            return CellState.enemy;
         }
 
-        return LineState.empty;
+        return CellState.empty;
 	}
 
     /// <summary>
-    /// Get the color for a given line state
+    /// Get the color for a given cell state
     /// </summary>
-    private Color GetColorForState(LineState state)
+    private Color GetColorForState(CellState state)
     {
         switch (state)
         {
-            case LineState.ally:
+            case CellState.ally:
                 return allyColor;
-            case LineState.enemy:
+            case CellState.enemy:
                 return enemyColor;
-            case LineState.clash:
+            case CellState.clash:
                 return clashColor;
-            case LineState.empty:
+            case CellState.empty:
             default:
                 return emptyColor;
         }
@@ -351,31 +290,17 @@ public class GridManager : MonoBehaviour
             appliedShapes.Remove(shape);
         }
 
-        // Remove ally occupancy from horizontal lines
-        var hCellsToUpdate = horizontalLineOccupancy.Keys.ToList();
-        foreach (var cell in hCellsToUpdate)
+        // Remove ally occupancy from cells
+        var cellsToUpdate = cellOccupancy.Keys.ToList();
+        foreach (var cell in cellsToUpdate)
         {
-            if (horizontalLineOccupancy[cell].ContainsKey(true))
+            if (cellOccupancy[cell].ContainsKey(true))
             {
-                horizontalLineOccupancy[cell].Remove(true); // Remove allies (true)
+                cellOccupancy[cell].Remove(true); // Remove allies (true)
             }
-            if (horizontalLineOccupancy[cell].Count == 0)
+            if (cellOccupancy[cell].Count == 0)
             {
-                horizontalLineOccupancy.Remove(cell);
-            }
-        }
-
-        // Remove ally occupancy from vertical lines
-        var vCellsToUpdate = verticalLineOccupancy.Keys.ToList();
-        foreach (var cell in vCellsToUpdate)
-        {
-            if (verticalLineOccupancy[cell].ContainsKey(true))
-            {
-                verticalLineOccupancy[cell].Remove(true); // Remove allies (true)
-            }
-            if (verticalLineOccupancy[cell].Count == 0)
-            {
-                verticalLineOccupancy.Remove(cell);
+                cellOccupancy.Remove(cell);
             }
         }
 
@@ -394,66 +319,45 @@ public class GridManager : MonoBehaviour
         }
 
         appliedShapes.Clear();
-        horizontalLineOccupancy.Clear();
-        verticalLineOccupancy.Clear();
+        cellOccupancy.Clear();
         UpdateDrawGrid();
 	}
 
     /// <summary>
-    /// Called when a LineFX object is clicked
+    /// Called when a LineFX cell is clicked
     /// </summary>
-    public void OnLineClicked(LineFX clickedLine)
+    public void OnCellClicked(CellFX clickedCell)
 	{
-        // Find the coordinate and orientation of the clicked line
+        // Find the coordinate of the clicked cell
         Vector2Int? foundCoord = null;
-        bool isHorizontal = false;
 
-        // Check horizontal lines
-        foreach (var kvp in horizontalLines)
+        foreach (var kvp in cells)
 		{
-            if (kvp.Value == clickedLine)
+            if (kvp.Value == clickedCell)
 			{
                 foundCoord = kvp.Key;
-                isHorizontal = true;
                 break;
 			}
 		}
 
-        // Check vertical lines if not found
         if (!foundCoord.HasValue)
 		{
-            foreach (var kvp in verticalLines)
-			{
-                if (kvp.Value == clickedLine)
-				{
-                    foundCoord = kvp.Key;
-                    isHorizontal = false;
-                    break;
-				}
-			}
-		}
-
-        if (!foundCoord.HasValue)
-		{
-            Debug.LogWarning("GridManager: Clicked line not found in grid!");
+            Debug.LogWarning("GridManager: Clicked cell not found in grid!");
             return;
 		}
 
-        Vector2Int lineCoord = foundCoord.Value;
+        Vector2Int cellCoord = foundCoord.Value;
 
-        // Get the occupancy dictionary for this line type
-        Dictionary<Vector2Int, Dictionary<bool, int>> targetOccupancy = isHorizontal ? horizontalLineOccupancy : verticalLineOccupancy;
-
-        // Check if this line has any ally occupancy
-        if (!targetOccupancy.ContainsKey(lineCoord) ||
-            !targetOccupancy[lineCoord].ContainsKey(true) ||
-            targetOccupancy[lineCoord][true] <= 0)
+        // Check if this cell has any ally occupancy
+        if (!cellOccupancy.ContainsKey(cellCoord) ||
+            !cellOccupancy[cellCoord].ContainsKey(true) ||
+            cellOccupancy[cellCoord][true] <= 0)
 		{
-            Debug.Log("GridManager: Clicked line has no ally shapes.");
+            Debug.Log("GridManager: Clicked cell has no ally shapes.");
             return;
 		}
 
-        // Find the first ally shape that occupies this line
+        // Find the first ally shape that occupies this cell
         ShapeData shapeToRemove = null;
         foreach (var kvp in appliedShapes)
 		{
@@ -463,7 +367,7 @@ public class GridManager : MonoBehaviour
             ShapeData shape = kvp.Key;
             Vector2Int basePosition = kvp.Value.basePosition;
 
-            // Check if this shape occupies the clicked line
+            // Check if this shape occupies the clicked cell
             var gridWrapper = shape.GridWrapper;
             if (gridWrapper != null && gridWrapper.rows != null)
 			{
@@ -471,19 +375,15 @@ public class GridManager : MonoBehaviour
 				{
                     for (int x = 0; x < gridWrapper.rows[y].colors.Count; x++)
 					{
-                        if (ShouldSkipCell(x, y))
-                            continue;
-
                         Color cellColor = gridWrapper.rows[y].colors[x];
 
-                        if (IsWhite(cellColor))
+                        if (cellColor.a > 0.5f)
 						{
-                            bool lineIsHorizontal;
-                            Vector2Int lineCoordInShape = MapShapePositionToLineCoord(x, y, out lineIsHorizontal);
-                            Vector2Int finalCoord = basePosition + lineCoordInShape;
+                            Vector2Int cellCoordInShape = new Vector2Int(x, y);
+                            Vector2Int finalCoord = basePosition + cellCoordInShape;
 
-                            // Check if this matches our clicked line
-                            if (lineIsHorizontal == isHorizontal && finalCoord == lineCoord)
+                            // Check if this matches our clicked cell
+                            if (finalCoord == cellCoord)
 							{
                                 shapeToRemove = shape;
                                 break;
@@ -506,6 +406,8 @@ public class GridManager : MonoBehaviour
 		}
 	}
 
+    public static event System.Action<ShapeData> OnShapeRemoved;
+
     /// <summary>
     /// Remove a single shape from the grid
     /// </summary>
@@ -521,8 +423,8 @@ public class GridManager : MonoBehaviour
         Vector2Int basePosition = shapeData.basePosition;
         bool isAlly = shapeData.allyTile;
 
-        // Track updated lines for pop effect
-        HashSet<(Vector2Int coord, bool isHorizontal)> updatedLines = new HashSet<(Vector2Int, bool)>();
+        // Track updated cells for pop effect
+        HashSet<Vector2Int> updatedCells = new HashSet<Vector2Int>();
 
         // Remove occupancy data for this shape
         var gridWrapper = shape.GridWrapper;
@@ -532,33 +434,28 @@ public class GridManager : MonoBehaviour
 			{
                 for (int x = 0; x < gridWrapper.rows[y].colors.Count; x++)
 				{
-                    if (ShouldSkipCell(x, y))
-                        continue;
-
                     Color cellColor = gridWrapper.rows[y].colors[x];
 
-                    if (IsWhite(cellColor))
+                    if (cellColor.a > 0.5f)
 					{
-                        bool isHorizontal;
-                        Vector2Int lineCoord = MapShapePositionToLineCoord(x, y, out isHorizontal);
-                        Vector2Int finalCoord = basePosition + lineCoord;
+                        Vector2Int cellCoord = new Vector2Int(x, y);
+                        Vector2Int finalCoord = basePosition + cellCoord;
 
                         // Remove from occupancy
-                        Dictionary<Vector2Int, Dictionary<bool, int>> targetOccupancy = isHorizontal ? horizontalLineOccupancy : verticalLineOccupancy;
-                        if (targetOccupancy.ContainsKey(finalCoord) && targetOccupancy[finalCoord].ContainsKey(isAlly))
+                        if (cellOccupancy.ContainsKey(finalCoord) && cellOccupancy[finalCoord].ContainsKey(isAlly))
 						{
-                            targetOccupancy[finalCoord][isAlly]--;
-                            if (targetOccupancy[finalCoord][isAlly] <= 0)
+                            cellOccupancy[finalCoord][isAlly]--;
+                            if (cellOccupancy[finalCoord][isAlly] <= 0)
 							{
-                                targetOccupancy[finalCoord].Remove(isAlly);
+                                cellOccupancy[finalCoord].Remove(isAlly);
 							}
-                            if (targetOccupancy[finalCoord].Count == 0)
+                            if (cellOccupancy[finalCoord].Count == 0)
 							{
-                                targetOccupancy.Remove(finalCoord);
+                                cellOccupancy.Remove(finalCoord);
 							}
 
-                            // Track this line for pop effect
-                            updatedLines.Add((finalCoord, isHorizontal));
+                            // Track this cell for pop effect
+                            updatedCells.Add(finalCoord);
 						}
 					}
 				}
@@ -567,17 +464,20 @@ public class GridManager : MonoBehaviour
 
         // Remove from appliedShapes and destroy the object
         appliedShapes.Remove(shape);
+
+        //Send an event out
+        OnShapeRemoved?.Invoke(shape);
+
         Destroy(shape);
 
         UpdateDrawGrid();
 
-        // Pop all updated lines
-        foreach (var (coord, isHorizontal) in updatedLines)
+        // Pop all updated cells
+        foreach (var coord in updatedCells)
         {
-            Dictionary<Vector2Int, LineFX> targetLines = isHorizontal ? horizontalLines : verticalLines;
-            if (targetLines.TryGetValue(coord, out LineFX line) && line != null)
+            if (cells.TryGetValue(coord, out CellFX cell) && cell != null)
             {
-                line.PopLine();
+                cell.PopLine();
             }
         }
 	}
@@ -588,40 +488,21 @@ public class GridManager : MonoBehaviour
     [Button("Update Grid Display")]
     public void UpdateDrawGrid()
 	{
-        // Update horizontal lines
-        foreach (var kvp in horizontalLines)
+        // Update cells
+        foreach (var kvp in cells)
         {
             Vector2Int coord = kvp.Key;
-            LineFX line = kvp.Value;
+            CellFX cell = kvp.Value;
 
-            if (line != null)
+            if (cell != null)
             {
-                LineState state = GetLineState(coord, true);
-                line.SetColor(GetColorForState(state));
+                CellState state = GetCellState(coord);
+                cell.SetColor(GetColorForState(state));
 
-                // Bring colored lines to front of hierarchy
-                if (state != LineState.empty)
+                // Bring colored cells to front of hierarchy
+                if (state != CellState.empty)
                 {
-                    line.transform.SetAsLastSibling();
-                }
-            }
-        }
-
-        // Update vertical lines
-        foreach (var kvp in verticalLines)
-        {
-            Vector2Int coord = kvp.Key;
-            LineFX line = kvp.Value;
-
-            if (line != null)
-            {
-                LineState state = GetLineState(coord, false);
-                line.SetColor(GetColorForState(state));
-
-                // Bring colored lines to front of hierarchy
-                if (state != LineState.empty)
-                {
-                    line.transform.SetAsLastSibling();
+                    cell.transform.SetAsLastSibling();
                 }
             }
         }

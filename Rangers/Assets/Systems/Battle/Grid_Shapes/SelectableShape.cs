@@ -12,8 +12,6 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
 	[SerializeField] Image linePrefab;
 
-	[SerializeField] private float cellSize = 20f;
-	[SerializeField] private float lineThickness = 2f;
 	[SerializeField] private Color previewColor = Color.white;
 
 	private List<Image> spawnedLines = new List<Image>();
@@ -23,13 +21,21 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 	private bool isDragging = false;
 	private Canvas canvas;
 	private RectTransform rectTransform;
-	private ShapeData currentShape;
+	private Transform originalParent;
+	private Vector2 originalPivot;
+	public ShapeData currentShape { get; private set; }
 
-	[SerializeField] ShapeData startingShapeData;
+	public bool Enabled = true;
+
+	System.Action OnSelected;
 
 	[Button]
-    public void Initialise(ShapeData shape)
+	public void Initialise(ShapeData shape, System.Action onSelected)
 	{
+		OnSelected = onSelected;
+
+		Enabled = true;
+
 		currentShape = shape;
 
 		// Clear existing preview
@@ -43,6 +49,9 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
 		var gridWrapper = shape.GridWrapper;
 		int gridSize = gridWrapper.rows.Count;
+
+		// Get cell size from GridManager
+		float cellSize = GridManager.instance.CellSize;
 
 		// Calculate the size of the preview container at scale 1
 		float totalWidth = gridSize * cellSize;
@@ -66,69 +75,36 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 			float finalScale = Mathf.Min(scaleX, scaleY);
 
 			// Apply scale to shapeHolder
-			shapeHolder.localScale = Vector3.one * finalScale * 2;
+			shapeHolder.localScale = Vector3.one * finalScale;
 
 			// Center the shapeHolder
 			holderRect.anchoredPosition = Vector2.zero;
 		}
 
-		Vector2 centerOffset = new Vector2(-(totalWidth / 4f), -(totalHeight / 4f)) + Vector2.one * (cellSize/4);
+		// Center offset so grid is centered at (0,0)
+		Vector2 centerOffset = new Vector2(-(totalWidth / 2f), -(totalHeight / 2f)) + Vector2.one * (cellSize / 2f);
 
-		// Spawn lines following the grid logic
+		// Spawn cells for the shape
 		for (int y = 0; y < gridWrapper.rows.Count; y++)
 		{
 			for (int x = 0; x < gridWrapper.rows[y].colors.Count; x++)
 			{
-				// Skip green cells (odd x AND odd y)
-				if ((x % 2 == 1 && y % 2 == 1) || (x % 2 == 0 && y % 2 == 0))
-					continue;
-
 				Color cellColor = gridWrapper.rows[y].colors[x];
 
-				// Only spawn lines for white (non-empty) cells
-				if (IsWhite(cellColor))
+				// Only spawn cells that are not transparent
+				if (cellColor.a > 0.5f)
 				{
-					bool isHorizontal;
-					Vector2 linePos;
-					Vector2 lineSize;
+					Vector2 cellPos = new Vector2(x * cellSize, y * cellSize) + centerOffset;
 
-					if (x % 2 == 0 && y % 2 == 0)
-					{
-						// Even x, Even y → Vertical line
-						isHorizontal = false;
-						lineSize = new Vector2(lineThickness, cellSize + lineThickness);
-						linePos = new Vector2((x / 2) * cellSize,
-						                      (y / 2) * cellSize + (cellSize / 2f));
-					}
-					else if (x % 2 == 1 && y % 2 == 0)
-					{
-						// Odd x, Even y → Horizontal line
-						isHorizontal = true;
-						lineSize = new Vector2(cellSize + lineThickness, lineThickness);
-						linePos = new Vector2(((x - 1) / 2) * cellSize + (cellSize / 2f),
-						                      (y / 2) * cellSize);
-					}
-					else // (x % 2 == 0 && y % 2 == 1)
-					{
-						// Even x, Odd y → Vertical line
-						isHorizontal = false;
-						lineSize = new Vector2(lineThickness, cellSize + lineThickness);
-						linePos = new Vector2((x / 2) * cellSize,
-						                      ((y - 1) / 2) * cellSize + (cellSize / 2f));
-					}
+					// Create the cell
+					Image cell = Instantiate(linePrefab, shapeHolder);
+					RectTransform rect = cell.rectTransform;
+					rect.sizeDelta = new Vector2(cellSize, cellSize);
+					rect.localPosition = cellPos;
+					cell.color = previewColor;
+					cell.name = $"Cell ({x},{y})";
 
-					// Apply center offset so grid is centered at (0,0)
-					linePos += centerOffset;
-
-					// Create the line
-					Image line = Instantiate(linePrefab, shapeHolder);
-					RectTransform rect = line.rectTransform;
-					rect.sizeDelta = lineSize;
-					rect.localPosition = linePos;
-					line.color = previewColor;
-					line.name = $"{(isHorizontal ? "H" : "V")}_Line ({x},{y})";
-
-					spawnedLines.Add(line);
+					spawnedLines.Add(cell);
 				}
 			}
 		}
@@ -144,131 +120,120 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 		spawnedLines.Clear();
 	}
 
-	private bool IsWhite(Color color)
-	{
-		float threshold = 0.9f;
-		return color.r >= threshold && color.g >= threshold && color.b >= threshold && color.a > 0.5f;
-	}
 
 	private void Awake()
 	{
 		rectTransform = GetComponent<RectTransform>();
 		canvas = GetComponentInParent<Canvas>();
 		originPosition = rectTransform.anchoredPosition;
-
-		Initialise(startingShapeData);
 	}
 
 	public void OnBeginDrag(PointerEventData eventData)
 	{
+		if (!Enabled)
+			return;
+
 		isDragging = true;
 		originPosition = rectTransform.anchoredPosition;
 		originalHolderScale = shapeHolder.localScale;
+		originalParent = rectTransform.parent;
+		originalPivot = rectTransform.pivot;
+
+		// Store current world position before changing parent
+		Vector3 worldPos = rectTransform.position;
+
+		// Reparent to canvas root to avoid parent transforms affecting drag
+		rectTransform.SetParent(canvas.transform, true);
+
+		// Center the pivot
+		rectTransform.pivot = new Vector2(0.5f, 0.5f);
+
+		// Restore world position after pivot change
+		rectTransform.position = worldPos;
+
 		shapeHolder.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutQuad);
 	}
 
 	public void OnDrag(PointerEventData eventData)
 	{
+		if (!Enabled)
+			return;
+
 		if (isDragging && canvas != null)
 		{
-			Vector2 localPoint;
-			RectTransformUtility.ScreenPointToLocalPointInRectangle(
-				rectTransform.parent as RectTransform,
+			// Convert screen position to world position, then set the RectTransform's world position directly
+			Vector3 worldPoint;
+			RectTransformUtility.ScreenPointToWorldPointInRectangle(
+				canvas.transform as RectTransform,
 				eventData.position,
 				canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera,
-				out localPoint
+				out worldPoint
 			);
 
-			rectTransform.anchoredPosition = localPoint;
+			rectTransform.position = worldPoint;
 		}
 	}
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
+		if (!Enabled)
+			return;
+
 		isDragging = false;
 
 		// Check if we're over the GridManager
 		bool placedOnGrid = false;
 		if (currentShape != null)
 		{
-			RectTransform gridRect = GridManager.instance.GetComponent<RectTransform>();
-			if (gridRect != null && RectTransformUtility.RectangleContainsScreenPoint(gridRect, eventData.position, canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera))
-			{
-				// Convert screen point to local point in grid
-				Vector2 localPoint;
-				RectTransformUtility.ScreenPointToLocalPointInRectangle(
-					gridRect,
-					eventData.position,
-					canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera,
-					out localPoint
-				);
+			// Get the cell under the mouse
+			CellFX cellUnderMouse = GridManager.instance.GetCellAtWorldPosition(rectTransform.position);
 
-				// Find the closest grid position
-				Vector2Int gridPosition = GetClosestGridPosition(localPoint, gridRect);
+			if (cellUnderMouse != null)
+			{
+				// Get the center tile of the current shape
+				Vector2Int shapeCenter = GetShapeCenter();
+
+				// Calculate the base position (top-left corner of shape relative to where center should go)
+				Vector2Int basePosition = cellUnderMouse.GridCoordinate - shapeCenter;
+
+				Debug.Log($"Cell under mouse: {cellUnderMouse.GridCoordinate}, Shape center: {shapeCenter}, Base position: {basePosition}");
 
 				// Place the shape on the grid
-				GridManager.instance.AddShape(currentShape, gridPosition, false); // false = ally
+				GridManager.instance.AddShape(currentShape, basePosition, false); // false = ally
 				placedOnGrid = true;
 			}
 		}
 
-		if (!placedOnGrid)
+		// Restore parent and pivot
+		rectTransform.SetParent(originalParent, true);
+		rectTransform.pivot = originalPivot;
+
+		rectTransform.DOAnchorPos(originPosition, 0.3f).SetEase(Ease.OutBack);
+		shapeHolder.DOScale(originalHolderScale, 0.3f).SetEase(Ease.OutBack);
+
+		if (placedOnGrid)
 		{
-			rectTransform.DOAnchorPos(originPosition, 0.3f).SetEase(Ease.OutBack);
-			shapeHolder.DOScale(originalHolderScale, 0.3f).SetEase(Ease.OutBack);
-		}
-		else
-		{
-			Destroy(gameObject);
+			OnSelected?.Invoke();
+			Enabled = false;
 		}
 	}
 
-	private Vector2Int GetClosestGridPosition(Vector2 localPoint, RectTransform gridRect)
+	/// <summary>
+	/// Get the center tile coordinate of the current shape
+	/// Shapes are always odd-sized (3x3, 5x5, 7x7, etc.)
+	/// </summary>
+	private Vector2Int GetShapeCenter()
 	{
-		// Get grid dimensions from GridManager
-		int gridSizeValue = GridManager.instance.GridSize;
-		Vector2Int gridSize = new Vector2Int(gridSizeValue, gridSizeValue);
+		if (currentShape == null || currentShape.GridWrapper == null || currentShape.GridWrapper.rows == null)
+		{
+			Debug.LogWarning("SelectableShape: Cannot get center of invalid shape");
+			return Vector2Int.zero;
+		}
 
-		// The GridManager has padding and calculates actual grid dimensions
-		// We need to match that calculation
-		float padding = 10f; // GridManager default padding
-		float availableWidth = gridRect.rect.width - (padding * 2);
-		float availableHeight = gridRect.rect.height - (padding * 2);
+		int gridSize = currentShape.GridWrapper.rows.Count;
 
-		float cellSize = Mathf.Min(availableWidth / gridSize.x, availableHeight / gridSize.y);
-		float actualGridWidth = gridSize.x * cellSize;
-		float actualGridHeight = gridSize.y * cellSize;
-
-		// localPoint is relative to the gridRect's center
-		// Offset to get coordinates relative to top-left of actual grid
-		float offsetX = localPoint.x + (actualGridWidth / 2f);
-		float offsetY = localPoint.y + (actualGridHeight / 2f);
-
-		// Calculate grid position
-		// The shape's visual is centered using this offset in Initialize:
-		// centerOffset = new Vector2(-(totalWidth / 4f), -(totalHeight / 4f)) + Vector2.one * (cellSize/4);
-		// This means the shape's grid coordinate system is offset from its visual center
-
-		int shapeGridSize = currentShape.gridSize;
-
-		// The visual center is at (shapeGridSize / 2) in shape grid coordinates
-		// We need to subtract this to get the position of grid coordinate (0,0)
-		float shapeCenterInTiles = shapeGridSize / 4.0f; // Matches the /4 in centerOffset calculation
-
-		float gridPosX = (offsetX / cellSize) - shapeCenterInTiles;
-		float gridPosY = (offsetY / cellSize) - shapeCenterInTiles;
-
-		int gridX = Mathf.RoundToInt(gridPosX);
-		int gridY = Mathf.RoundToInt(gridPosY);
-
-		// Clamp to grid bounds
-		gridX = Mathf.Clamp(gridX, 0, gridSize.x - 1);
-		gridY = Mathf.Clamp(gridY, 0, gridSize.y - 1);
-
-		Debug.Log($"Shape gridSize: {currentShape.gridSize}");
-		Debug.Log($"Cell Size: {cellSize}, Actual Grid: {actualGridWidth}x{actualGridHeight}");
-		Debug.Log($"Offset: ({offsetX}, {offsetY}) -> GridPos: ({gridPosX}, {gridPosY}) -> Final: ({gridX}, {gridY})");
-
-		return new Vector2Int(gridX, gridY);
+		// For odd-sized grids, the center is simply size/2 (integer division)
+		// e.g., 3x3 -> center is (1,1), 5x5 -> center is (2,2), 7x7 -> center is (3,3)
+		return new Vector2Int(gridSize / 2, gridSize / 2);
 	}
 }

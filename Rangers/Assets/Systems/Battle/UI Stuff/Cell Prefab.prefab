@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7055082770533934961}
   - component: {fileID: 768684006934400372}
   m_Layer: 5
-  m_Name: Line Prefab
+  m_Name: Cell Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 20}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5113773958549420024
 CanvasRenderer:

@@ -102,20 +102,13 @@ public class ShapeData : ScriptableObject
 			UnityEditor.EditorGUILayout.BeginHorizontal();
 			for (int x = 0; x < gridWrapper.rows[y].colors.Count; x++)
 			{
-				bool isLockedCell = x % 2 == 1 && y % 2 == 1;
-
-				if (isLockedCell)
-				{
-					gridWrapper.rows[y].colors[x] = Color.green;
-				}
-
 				Rect rect = GUILayoutUtility.GetRect(cellSize, cellSize);
 
 				UnityEditor.EditorGUI.DrawRect(rect, gridWrapper.rows[y].colors[x]);
 				UnityEditor.EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, 1), Color.black);
 				UnityEditor.EditorGUI.DrawRect(new Rect(rect.x, rect.y, 1, rect.height), Color.black);
 
-				if (!isLockedCell && Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
+				if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
 				{
 					if (Event.current.button == 0) // Left click
 					{

@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13b0b700001ff794e808821bedb1c700, type: 3}
-  m_Name: Creature - Orbuncle
+  m_Name: Creature - Mingorg
   m_EditorClassIdentifier: 
-  creatureName: Orbuncle
-  sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
-  desc: I'm just a wee lad
+  creatureName: Mingorg
+  sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  desc: ROCKS
   healthMaxAlly: 10
   healthMaxEnemy: 50
   enemyShapePool:
-  - {fileID: 11400000, guid: 8b825c83b05b05f41ab41b86bde8fe76, type: 2}
+  - {fileID: 11400000, guid: 7d1cc8460f345664da59d2c496d75ca4, type: 2}
   allyShapePool:
   - {fileID: 11400000, guid: 8335b0e0fc862624b9f3f65b44e2e83a, type: 2}
   - {fileID: 11400000, guid: f7a80b61b52641e4f9be908d333c9f23, type: 2}
-  - {fileID: 11400000, guid: 7d1cc8460f345664da59d2c496d75ca4, type: 2}
-  - {fileID: 11400000, guid: 242adb746de3b464d9ce9d135ef8ce05, type: 2}
+  - {fileID: 11400000, guid: 8335b0e0fc862624b9f3f65b44e2e83a, type: 2}
+  - {fileID: 11400000, guid: 3b94c0a971e9f35469680cd98dc6a98a, type: 2}
   currentShapePool: []
