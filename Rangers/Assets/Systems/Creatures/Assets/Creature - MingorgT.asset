@@ -15,7 +15,7 @@ MonoBehaviour:
   uniqueId: 
   creatureName: Mingorg
   sprite: {fileID: 21300000, guid: 22120e5ffe73edf42afd6a849ef09b76, type: 3}
-  desc: ROCKS
+  desc: Short for mineral gorgon
   sizeRangeCM: {x: 24, y: 56}
   healthMaxAlly: 10
   healthMaxEnemy: 10

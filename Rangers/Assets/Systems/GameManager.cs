@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
 	{
 		var creature = OwnedCreaturePage.instance.allCreatures.GetRandom();
 
-		if(OwnedCreaturePage.instance.OwnedCreaturesThisRun.Count <= 3)
+		if (OwnedCreaturePage.instance.OwnedCreaturesThisRun.Count <= 3)
 		{
 			creature = firstExpeditionCreatures[CombatsDoneThisExpdition];
 		}
@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
 		loseScreen.SetActive(true);
 		battleManager.SetActive(false);
 	}
-	
+
 
 	public void OnWinBattle()
 	{
@@ -110,14 +110,29 @@ public class GameManager : MonoBehaviour
 	{
 		CombatsDoneThisExpdition++;
 
-		if (CombatsDoneThisExpdition >= 3)
+		if (OwnedCreaturePage.instance.OwnedCreaturesThisRun.Count <= 3)
 		{
-			//We have completed the expidition
-			expiditionCompleteScreen.SetActive(true);
+			if (CombatsDoneThisExpdition >= firstExpeditionCreatures.Count)
+			{
+				expiditionCompleteScreen.SetActive(true);
+			}
+			else
+			{
+				CharacterSelect();
+			}
 		}
 		else
 		{
-			CharacterSelect();
+
+			if (CombatsDoneThisExpdition >= 3)
+			{
+				//We have completed the expidition
+				expiditionCompleteScreen.SetActive(true);
+			}
+			else
+			{
+				CharacterSelect();
+			}
 		}
 	}
 

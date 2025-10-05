@@ -2,6 +2,7 @@ using DG.Tweening;
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,9 @@ public class CellFX : MonoBehaviour
     [SerializeField] float popTime = 1;
     [SerializeField] int popvibrato = 10;
     [SerializeField] float popelasticity = 1;
+
+    [Space]
+    [SerializeField] TextMeshProUGUI dmgNotifier;
 
     public RectTransform rectTransform => transform as RectTransform;
 
@@ -50,4 +54,14 @@ public class CellFX : MonoBehaviour
 	{
         transform.DOPunchScale(Vector3.one * popScale, popTime, popvibrato, popelasticity);
 	}
+
+    public void SetDmgShowActive(bool val)
+	{
+        dmgNotifier.gameObject.SetActive(val);
+    }
+
+    public void PreviewDmg(int dmg)
+	{
+        dmgNotifier.SetText(dmg.ToString());
+    }
 }
