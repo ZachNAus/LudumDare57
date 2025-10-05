@@ -1315,9 +1315,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1805308913}
     m_Modifications:
+    - target: {fileID: 294226382004180968, guid: 574d4de3b2d868d449e7d6f8c10010dc, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 879cb16c7e8bb814186cb9e9fb0260d1, type: 2}
+    - target: {fileID: 294226382004180968, guid: 574d4de3b2d868d449e7d6f8c10010dc, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -1942256700666351592, guid: 879cb16c7e8bb814186cb9e9fb0260d1, type: 2}
+    - target: {fileID: 294226382004180968, guid: 574d4de3b2d868d449e7d6f8c10010dc, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1189447918486178002, guid: 574d4de3b2d868d449e7d6f8c10010dc, type: 3}
       propertyPath: m_Name
       value: Battle Screen
+      objectReference: {fileID: 0}
+    - target: {fileID: 1895735802979161422, guid: 574d4de3b2d868d449e7d6f8c10010dc, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 879cb16c7e8bb814186cb9e9fb0260d1, type: 2}
+    - target: {fileID: 1895735802979161422, guid: 574d4de3b2d868d449e7d6f8c10010dc, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -1942256700666351592, guid: 879cb16c7e8bb814186cb9e9fb0260d1, type: 2}
+    - target: {fileID: 1895735802979161422, guid: 574d4de3b2d868d449e7d6f8c10010dc, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2225727190123913305, guid: 574d4de3b2d868d449e7d6f8c10010dc, type: 3}
       propertyPath: m_SizeDelta.x
