@@ -77,6 +77,8 @@ public class CharacterMinorUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
 	public void OnPointerExit(PointerEventData eventData)
 	{
+		if (canHover)
+			OnHoverAny?.Invoke(null);
 	}
 
 	public void Punch()

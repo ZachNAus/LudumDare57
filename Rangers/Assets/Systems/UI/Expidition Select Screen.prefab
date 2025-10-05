@@ -103,10 +103,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
+    m_Left: 25
+    m_Right: 25
+    m_Top: 25
+    m_Bottom: 25
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
@@ -310,6 +310,8 @@ MonoBehaviour:
   charHealth: {fileID: 3368944833887324045}
   attackHolder: {fileID: 2355106566859599558}
   shapePrefab: {fileID: 7701881587340712973, guid: 15c0e7cfef874dc4bbe8551523865946, type: 3}
+  hideWhenNoHover:
+  - {fileID: 5099735684150758420}
 --- !u!1 &1938898615129396218
 GameObject:
   m_ObjectHideFlags: 0

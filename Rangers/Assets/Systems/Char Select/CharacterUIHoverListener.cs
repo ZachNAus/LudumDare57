@@ -13,12 +13,16 @@ public class CharacterUIHoverListener : MonoBehaviour
     [SerializeField] Transform attackHolder;
     [SerializeField] SelectableShape shapePrefab;
 
+	[Space]
+
+	[SerializeField] GameObject[] hideWhenNoHover;
+
 	private void OnEnable()
 	{
 		CharacterMinorUI.OnHoverAny -= OnHover;
 		CharacterMinorUI.OnHoverAny += OnHover;
 
-		OnHover(OwnedCreaturePage.instance.OwnedCreaturesThisRun[0]);
+		OnHover(null);
 	}
 	private void OnDisable()
 	{
@@ -27,10 +31,10 @@ public class CharacterUIHoverListener : MonoBehaviour
 
 	void OnHover(CreatureData creature)
 	{
-		if(creature != null)
-		{
-			Hide();
+		Hide();
 
+		if (creature != null)
+		{
 			sprite.SetCreature(creature);
 
 			charName.SetText(creature.creatureName);
@@ -45,6 +49,9 @@ public class CharacterUIHoverListener : MonoBehaviour
 				inst.Enabled = false;
 				inst.SetNotInteractable();
 			}
+
+			foreach (var f in hideWhenNoHover)
+				f.SetActive(true);
 		}
 	}
 
@@ -52,6 +59,12 @@ public class CharacterUIHoverListener : MonoBehaviour
 	{
 		sprite.SetCreature(null);
 
+		charName.SetText("");
+		charHealth.SetText("");
+
 		attackHolder.DestroyAllChildren();
+
+		foreach (var f in hideWhenNoHover)
+			f.SetActive(false);
 	}
 }
