@@ -17,7 +17,7 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: c21ea51fcfa9e5c4aa781dd295484c9f, type: 3}
   desc: I'm just a wee lad
   sizeRangeCM: {x: 24, y: 56}
-  healthMaxAlly: 20
+  healthMaxAlly: 25
   healthMaxEnemy: 75
   enemyShapePool:
   - {fileID: 11400000, guid: 34e1e010a3fcfaa4896ce3d513dedb66, type: 2}
