@@ -20,7 +20,9 @@ MonoBehaviour:
   healthMaxAlly: 10
   healthMaxEnemy: 50
   enemyShapePool:
-  - {fileID: 11400000, guid: 8b825c83b05b05f41ab41b86bde8fe76, type: 2}
+  - {fileID: 11400000, guid: 5166a6d88fe8c9c49a874685878885fd, type: 2}
+  - {fileID: 11400000, guid: 4798ad93c5e6444458b39448492fc77f, type: 2}
+  - {fileID: 11400000, guid: 72deae711896c99479231a9ef872b453, type: 2}
   allyShapePool:
   - {fileID: 11400000, guid: 1ff8d8670e770fa4395439f2ce101a8b, type: 2}
   - {fileID: 11400000, guid: 99ae8523e4c38db43ac90db85b20f046, type: 2}
