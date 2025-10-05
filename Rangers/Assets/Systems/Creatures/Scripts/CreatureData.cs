@@ -17,6 +17,7 @@ public class CreatureData : ScriptableObject
 
 	public Sprite sprite;
 
+	[TextArea(3,10)]
 	public string desc;
 
 	[SerializeField] Vector2 sizeRangeCM = new Vector2(24,56);
@@ -49,8 +50,8 @@ public class CreatureData : ScriptableObject
 
 		sb.Append($"Size : {CreatureSize}cm\n");
 
-		string gender = IsBoy ? "Male" : "Female\n\n";
-		sb.Append($"Gender : {gender}");
+		string gender = IsBoy ? "Male" : "Female";
+		sb.Append($"Gender : {gender}\n\n");
 
 		sb.Append(desc);
 
