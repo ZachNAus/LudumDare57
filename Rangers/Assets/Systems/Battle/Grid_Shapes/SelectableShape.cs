@@ -87,29 +87,8 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 		float totalWidth = gridSize * cellSize;
 		float totalHeight = gridSize * cellSize;
 
-		// Get the parent RectTransform size
-		RectTransform parentRect = shapeHolder.parent.GetComponent<RectTransform>();
-		RectTransform holderRect = shapeHolder.GetComponent<RectTransform>();
-
-		float availableWidth = 0f;
-		float availableHeight = 0f;
-
-		if (parentRect != null && holderRect != null)
-		{
-			availableWidth = parentRect.rect.width;
-			availableHeight = parentRect.rect.height;
-
-			// Calculate scale to fit within parent
-			float scaleX = availableWidth / totalWidth;
-			float scaleY = availableHeight / totalHeight;
-			float finalScale = Mathf.Min(scaleX, scaleY);
-
-			// Apply scale to shapeHolder
-			shapeHolder.localScale = Vector3.one * finalScale;
-
-			// Center the shapeHolder
-			holderRect.anchoredPosition = Vector2.zero;
-		}
+		// Scale the shape holder to fit within parent
+		SetInternalShapeScale();
 
 		// Center offset so grid is centered at (0,0)
 		Vector2 centerOffset = new Vector2(-(totalWidth / 2f), -(totalHeight / 2f)) + Vector2.one * (cellSize / 2f);
@@ -138,6 +117,39 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 					spawnedLines.Add(cell);
 				}
 			}
+		}
+	}
+
+	public void SetInternalShapeScale()
+	{
+		var gridWrapper = currentShape.GridWrapper;
+		int gridSize = gridWrapper.rows.Count;
+
+		// Get cell size from GridManager
+		float cellSize = GridManager.instance.CellSize;
+
+		float totalWidth = gridSize * cellSize;
+		float totalHeight = gridSize * cellSize;
+
+		// Get the parent RectTransform size
+		RectTransform parentRect = shapeHolder.parent.GetComponent<RectTransform>();
+		RectTransform holderRect = shapeHolder.GetComponent<RectTransform>();
+
+		if (parentRect != null && holderRect != null)
+		{
+			float availableWidth = parentRect.rect.width;
+			float availableHeight = parentRect.rect.height;
+
+			// Calculate scale to fit within parent
+			float scaleX = availableWidth / totalWidth;
+			float scaleY = availableHeight / totalHeight;
+			float finalScale = Mathf.Min(scaleX, scaleY);
+
+			// Apply scale to shapeHolder
+			shapeHolder.localScale = Vector3.one * finalScale;
+
+			// Center the shapeHolder
+			holderRect.anchoredPosition = Vector2.zero;
 		}
 	}
 

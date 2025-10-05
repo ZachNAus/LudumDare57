@@ -4,18 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using TMPro;
 
 public class CharacterMinorUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] Image charSprite;
+	[SerializeField] Image charSprite;
 
-    [SerializeField] Button btn;
+	[SerializeField] Button btn;
 
 	[SerializeField] bool canHover;
 
-    public CreatureData Creature { get; private set; }
+	[Header("Optional")]
+	[SerializeField] TextMeshProUGUI enemyNameTxt;
 
-    public static event System.Action<CreatureData> OnHoverAny;
+	public CreatureData Creature { get; private set; }
+
+	public static event System.Action<CreatureData> OnHoverAny;
 
 	private void Awake()
 	{
@@ -28,8 +32,8 @@ public class CharacterMinorUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
 		this.onPress = onPress;
 
 		SetCreature(creature);
-    }
-	
+	}
+
 	public void SetCreature(CreatureData creature)
 	{
 		Creature = creature;
@@ -42,18 +46,32 @@ public class CharacterMinorUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
 		charSprite.gameObject.SetActive(Creature != null);
 
 		if (Creature != null)
+		{
 			charSprite.sprite = Creature.sprite;
+		}
+
+		if (enemyNameTxt != null)
+		{
+			if(Creature != null)
+			{
+				enemyNameTxt.SetText(OwnedCreaturePage.instance.HasFoundCreature(Creature) ? Creature.creatureName : "???");
+			}
+			else
+			{
+				enemyNameTxt.SetText("???");
+			}
+		}
 	}
 
 
-    void OnPress()
+	void OnPress()
 	{
 		onPress?.Invoke(Creature, this);
 	}
 
 	public void OnPointerEnter(PointerEventData eventData)
 	{
-		if(canHover)
+		if (canHover)
 			OnHoverAny?.Invoke(Creature);
 	}
 
