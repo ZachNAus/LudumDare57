@@ -363,4 +363,9 @@ public class BattleManager : MonoBehaviour
 			}
 		}
 	}
+
+	private void Update()
+	{
+		enemySprite.color = new Color(1,1,1, SelectableShape.DraggingAny ? 0.3f : 1);
+	}
 }

@@ -147,10 +147,14 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 		originPosition = rectTransform.anchoredPosition;
 	}
 
+	public static bool DraggingAny;
+
 	public void OnBeginDrag(PointerEventData eventData)
 	{
 		if (!Enabled)
 			return;
+
+		DraggingAny = true;
 
 		isDragging = true;
 		originPosition = rectTransform.anchoredPosition;
@@ -197,6 +201,8 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 	{
 		if (!Enabled)
 			return;
+
+		DraggingAny = false;
 
 		isDragging = false;
 
