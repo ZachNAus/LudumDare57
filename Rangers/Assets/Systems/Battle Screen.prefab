@@ -194,6 +194,7 @@ GameObject:
   - component: {fileID: 5861043116235753503}
   - component: {fileID: 3851519351388279163}
   - component: {fileID: 4928307024455474755}
+  - component: {fileID: 4437112245105530603}
   m_Layer: 5
   m_Name: Grid Holder (4)
   m_TagString: Untagged
@@ -272,6 +273,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 2
   m_AspectRatio: 1
+--- !u!95 &4437112245105530603
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739128328965255493}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f5c990130f5add345800218de88aba82, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3270696856220926011
 GameObject:
   m_ObjectHideFlags: 0
@@ -363,6 +385,7 @@ GameObject:
   - component: {fileID: 165332174396026553}
   - component: {fileID: 6275320219568470806}
   - component: {fileID: 190187251208596487}
+  - component: {fileID: 5688329354713833453}
   m_Layer: 5
   m_Name: Grid Holder (1)
   m_TagString: Untagged
@@ -441,6 +464,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 2
   m_AspectRatio: 1
+--- !u!95 &5688329354713833453
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3485930266887348958}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 84944c855dcc1e34ab5f94a7f8290cb9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3683916206809740239
 GameObject:
   m_ObjectHideFlags: 0
@@ -452,6 +496,7 @@ GameObject:
   - component: {fileID: 7580226083455317319}
   - component: {fileID: 4711002141291112468}
   - component: {fileID: 3814785782713939873}
+  - component: {fileID: 3833254863459880526}
   m_Layer: 5
   m_Name: Enemy Circle
   m_TagString: Untagged
@@ -516,6 +561,27 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!95 &3833254863459880526
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3683916206809740239}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7c8c60dc9bc13e84bb63cf34bf26f001, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3795215121499798968
 GameObject:
   m_ObjectHideFlags: 0
@@ -1371,6 +1437,7 @@ GameObject:
   - component: {fileID: 8397774570992016770}
   - component: {fileID: 1969896586864251097}
   - component: {fileID: 7205471991829651177}
+  - component: {fileID: 2744830071282466075}
   m_Layer: 5
   m_Name: Grid Holder (3)
   m_TagString: Untagged
@@ -1449,6 +1516,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 2
   m_AspectRatio: 1
+--- !u!95 &2744830071282466075
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8771156491499294897}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f770189fa32d2b5499eefaf8e40e12a2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &9196348102609801893
 GameObject:
   m_ObjectHideFlags: 0
