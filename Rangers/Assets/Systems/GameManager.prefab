@@ -53,6 +53,10 @@ MonoBehaviour:
   expiditionCompleteScreen: {fileID: 0}
   charSelectScreen: {fileID: 0}
   startingCreature: {fileID: 11400000, guid: b75cf0df0ccc3c54aa0d6b20f081e319, type: 2}
+  firstExpeditionCreatures:
+  - {fileID: 11400000, guid: 2b09a920734869443970c6d099027f98, type: 2}
+  - {fileID: 11400000, guid: 2b09a920734869443970c6d099027f98, type: 2}
+  - {fileID: 11400000, guid: 2b09a920734869443970c6d099027f98, type: 2}
   CombatsDoneThisExpdition: 0
 --- !u!114 &5397129488165258012
 MonoBehaviour:
@@ -71,6 +75,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b75cf0df0ccc3c54aa0d6b20f081e319, type: 2}
   - {fileID: 11400000, guid: 794dd30566f6d1c43b9a5d1e4e1e0ec3, type: 2}
   - {fileID: 11400000, guid: 6bc4f3451c975ea4faac2ae46b24aacf, type: 2}
-  - {fileID: 11400000, guid: 2b09a920734869443970c6d099027f98, type: 2}
   OwnedCreaturesThisRun: []
   CreaturesInExpidition: []
