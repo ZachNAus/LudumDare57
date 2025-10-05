@@ -42,34 +42,72 @@ Assets/
 │       └── Extensions.cs          # Global extension methods and utilities
 ├── Plugins/                 # Third-party assets (Odin, DOTween, Rainbow Folders)
 ├── Resources/               # Unity Resources folder
-└── Scenes/
-    └── SampleScene.unity    # Main scene
+├── Scenes/
+│   ├── MainScene.unity          # Primary game scene
+│   └── SampleScene.unity        # Legacy/sample scene
+└── SerializableDictionary/      # Third-party serializable dictionary utility
 ```
+
+### Game Architecture
+
+The game is a **grid-based tactical battle system** with these core managers:
+
+- **GameManager** (`Assets/Systems/GameManager.cs`): Singleton managing game flow
+  - Controls screen navigation (main menu, character select, battle, victory/defeat)
+  - Manages wave progression and owned creatures collection
+  - Orchestrates battle initialization with selected creatures
+
+- **BattleManager** (`Assets/Systems/Battle/BattleManager.cs`): Turn-based battle controller
+  - Manages health, damage calculation, and turn flow
+  - Enemy turn: Spawns a random shape on the grid from enemy's shape pool
+  - Player turn: Each ally gets 2 random attack shapes to choose from
+  - Damage calculation: Allies deal 1 damage per grid cell they control; enemies deal base damage + bonus for adjacent enemy cells
+
+- **GridManager** (`Assets/Systems/Battle/Grid_Shapes/GridManager.cs`): Grid state management
+  - Manages the shared grid battlefield where shapes are placed
+  - Tracks cell states (empty, ally, enemy, contested)
+  - Handles shape placement validation and overlap resolution
 
 ### ScriptableObject Pattern
 
 The game uses Unity's **ScriptableObject pattern** for data-driven design:
 
 - **CreatureData** (`Assets/Systems/Creatures/Scripts/CreatureData.cs`): Defines creatures with:
-  - Sprite representation
-  - Description text
-  - `shapePool`: List of available shapes for this creature
-  - `currentShapePool`: Runtime-tracked active shapes (marked `[ReadOnly]` for debugging)
+  - Basic properties: `creatureName`, `sprite`, `desc`, `uniqueId`
+  - Health values: `healthMaxAlly` and `healthMaxEnemy` (creatures have different stats as ally vs enemy)
+  - Shape pools: `allyShapePool` and `enemyShapePool` - separate attack patterns for each role
+  - `currentShapePool`: Runtime pool tracking which attacks are still available this battle
+  - Methods: `GetRandomAttack(isEnemy)` draws from pool, `EmptyPool()` resets between battles
   - Create via: `Assets > Create > RANGER/Creature`
 
-- **ShapeData** (`Assets/Systems/Creatures/Scripts/ShapeData.cs`): Minimal shape definition
-  - Currently a placeholder for future shape properties
+- **ShapeData** (`Assets/Systems/Creatures/Scripts/ShapeData.cs`): Grid-based attack pattern definition
+  - `uniqueID`: Identifier for this shape
+  - `gridSize`: Configurable grid dimensions (default 8x8)
+  - `currentColor`: Active color for painting cells in the editor
+  - `GridWrapper`: Nested serializable structure containing 2D grid of colors
+  - **Interactive Editor**: Custom Odin Inspector GUI allows clicking cells to paint attack patterns
+    - Left-click: Paint with `currentColor`
+    - Right-click: Erase (set to `Color.clear`)
+  - The colored grid defines which cells are "active" when this attack shape is placed on the battlefield
   - Create via: `Assets > Create > RANGER/Shape`
 
 ### Extension Methods
 
-`Extensions.cs` provides global utility methods:
+`Extensions.cs` (`Assets/Systems/Helper Functions/Extensions.cs`) provides global utility methods:
 - **Random selection**: `GetRandom<T>()` for arrays and lists
-- **Transform utilities**: `DestroyAllChildren()`
-- **Vector manipulation**: `XOZ()`, `OYZ()`, `XYO()` projection methods
+- **Transform utilities**: `DestroyAllChildren()` - destroys all child GameObjects
+- **Vector manipulation**: `XOZ()`, `OYZ()`, `XYO()` projection methods for zeroing specific components
 - **Number formatting**: `FormatNumber()` for ordinal numbers (1st, 2nd, 3rd...)
-- **Math comparisons**: `MeetsEquation()` for dynamic inequality checks
+- **Math comparisons**: `MeetsEquation()` with `MathEquation` enum for dynamic inequality checks
 - **Array operations**: `GetAverage()` for float collections
+- **String utilities**: `IsNullOrEmpty()` wrapper
+- **Coroutine utilities**: `SafeStopCoroutine()` null-safe coroutine stopping
+
+### Additional Data Structures
+
+- **SerializableDictionary** (`Assets/SerializableDictionary/`): Third-party utility enabling Unity-serializable dictionaries
+  - Standard C# dictionaries don't serialize in Unity Inspector
+  - Use this when you need inspector-editable key-value pairs
 
 ## Development Workflow
 
@@ -87,15 +125,27 @@ Unity Editor:
 
 ### Running in Editor
 
-- Open `Assets/Scenes/SampleScene.unity`
+- Open `Assets/Scenes/MainScene.unity` (primary game scene)
 - Press Play button in Unity Editor
+- Note: `SampleScene.unity` exists but `MainScene.unity` is the active game scene
 
 ### Working with ScriptableObjects
 
 When creating new data assets:
 - Right-click in Project window > Create > RANGER > [Creature/Shape]
 - Store creature assets in `Assets/Systems/Creatures/Assets/`
+- Store shape patterns organized by creature in `Assets/Systems/Creatures/Assets/Shapes/[CreatureName] - Attacks/`
 - All ScriptableObjects use the `RANGER` menu prefix for consistency
+
+**ShapeData Editor Workflow:**
+1. Create new Shape asset via RANGER menu
+2. Set `uniqueID` (important for pool management)
+3. Adjust `gridSize` if needed (triggers automatic grid resize)
+4. Select `currentColor` for painting
+5. Click cells in the visual grid to design attack pattern
+6. Left-click paints, right-click erases
+7. Save the asset
+8. Add to a CreatureData's `allyShapePool` or `enemyShapePool`
 
 ### Code Conventions
 
@@ -115,6 +165,27 @@ When creating new data assets:
   - Min SDK: 22
   - Scripting defines: `DOTWEEN`
 
+## Game Loop and Mechanics
+
+**High-Level Flow:**
+1. **Main Menu** → Player clicks "Start Game"
+2. **Character Select** → Player chooses up to 3 creatures from owned collection for battle
+3. **Battle Phase** → Turn-based grid combat
+   - Enemy places a random shape on the shared grid (from `enemyShapePool`)
+   - Player selects attack shapes for each ally (2 options per ally, from `allyShapePool`)
+   - Player places selected shapes on grid to contest enemy territory
+   - Click "GO" to resolve turn
+4. **Resolution** → Damage calculated, health updated
+5. **Victory/Defeat** → Win adds enemy to collection, defeat returns to menu
+6. **Next Wave** → Face stronger enemies with expanded creature roster
+
+**Core Mechanic - Grid Territory Control:**
+- Shared 8x8 grid battlefield where both sides place colored shape patterns
+- When shapes overlap, cells become contested
+- Ally damage = number of grid cells under ally control
+- Enemy damage = base damage per enemy cell + bonus for adjacent enemy cells
+- Strategic placement to maximize territory and minimize damage taken
+
 ## Project Context
 
 This is a **Ludum Dare 57 game jam project**, which means:
@@ -122,3 +193,9 @@ This is a **Ludum Dare 57 game jam project**, which means:
 - ScriptableObjects are used for quick data editing without recompiling
 - Third-party tools (Odin, DOTween) are used to accelerate development
 - Code is kept simple and in the global namespace for rapid prototyping
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.

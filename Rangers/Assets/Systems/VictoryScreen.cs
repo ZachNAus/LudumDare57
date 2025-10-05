@@ -22,7 +22,7 @@ public class VictoryScreen : MonoBehaviour
 		charSprite.sprite = c.sprite;
 
 		charName.SetText(c.creatureName);
-		charDesc.SetText(c.desc);
+		charDesc.SetText(c.GetFullDescription());
 
 		attackHolder.DestroyAllChildren();
 

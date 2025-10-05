@@ -2,6 +2,7 @@ using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "RANGER/Creature")]
@@ -17,6 +18,13 @@ public class CreatureData : ScriptableObject
 	public Sprite sprite;
 
 	public string desc;
+
+	[SerializeField] Vector2 sizeRangeCM = new Vector2(24,56);
+	public float CreatureSize { get; private set; }
+
+	public bool IsBoy { get; private set; }
+
+	[Space]
 
 	[FoldoutGroup("Health")]
 	public float healthMaxAlly;
@@ -34,6 +42,20 @@ public class CreatureData : ScriptableObject
 	//[ReadOnly]
 	[Tooltip("What attacks they have left")]
 	public List<ShapeData> currentShapePool = new List<ShapeData>();
+
+	public string GetFullDescription()
+	{
+		StringBuilder sb = new StringBuilder();
+
+		sb.Append($"Size : {CreatureSize}cm\n");
+
+		string gender = IsBoy ? "Male" : "Female\n\n";
+		sb.Append($"Gender : {gender}");
+
+		sb.Append(desc);
+
+		return sb.ToString();
+	}
 
 	public ShapeData GetRandomAttack(bool isEnemy)
 	{
@@ -66,5 +88,16 @@ public class CreatureData : ScriptableObject
 	public void EmptyPool()
 	{
 		currentShapePool.Clear();
+	}
+
+	static int IdsMade = 0;
+
+	public void FirstTimeSetup()
+	{
+		this.uniqueId = $"Creature {IdsMade}";
+		IdsMade++;
+
+		CreatureSize = Random.Range(sizeRangeCM.x, sizeRangeCM.y);
+		IsBoy = Random.value > 0.5f;
 	}
 }

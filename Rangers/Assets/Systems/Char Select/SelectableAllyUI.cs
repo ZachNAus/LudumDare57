@@ -25,8 +25,8 @@ public class SelectableAllyUI : MonoBehaviour
 	}
 
 	CreatureData c;
-	CharSelectScreen screen;
-	public void Setup(CreatureData creature, CharSelectScreen screenRef)
+	ISelectableToTeam screen;
+	public void Setup(CreatureData creature, ISelectableToTeam screenRef)
 	{
 		screen = screenRef;
 		c = creature;

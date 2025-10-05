@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharSelectScreen : MonoBehaviour
+public class CharSelectScreen : MonoBehaviour, ISelectableToTeam
 {
 	[SerializeField] Button deployBtn;
 
@@ -25,7 +25,7 @@ public class CharSelectScreen : MonoBehaviour
 		enemyPreview.sprite = GameManager.instance.CurrentEnemy.sprite;
 
 		selectableAllyHolder.DestroyAllChildren();
-		foreach (var ally in OwnedCreaturePage.instance.OwnedCreaturesThisRun)
+		foreach (var ally in OwnedCreaturePage.instance.CreaturesInExpidition)
 		{
 			var inst = Instantiate(selectableAllyPrefab, selectableAllyHolder);
 			inst.Setup(ally, this);

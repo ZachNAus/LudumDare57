@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class OwnedCreaturePage : MonoBehaviour
 {
-	[SerializeField] List<CreatureData> allCreatures = new List<CreatureData>();
+	public List<CreatureData> allCreatures = new List<CreatureData>();
 
     public static OwnedCreaturePage instance;
 
@@ -30,22 +30,29 @@ public class OwnedCreaturePage : MonoBehaviour
 	[ReadOnly]
 	public List<CreatureData> OwnedCreaturesThisRun = new List<CreatureData>();
 
+	[ReadOnly]
+	public List<CreatureData> CreaturesInExpidition = new List<CreatureData>();
+
 	public void ClearOwnedCreatures()
 	{
 		OwnedCreaturesThisRun.Clear();
+		CreaturesInExpidition.Clear();
 	}
 
-	int currentId;
 	public void AddCreature(CreatureData capturedCreature)
 	{
 		var inst = Instantiate(capturedCreature);
 
-		inst.uniqueId = $"Creature {currentId}";
-		currentId++;
+		inst.FirstTimeSetup();
 
 		inst.EmptyPool();
 
 		OwnedCreaturesThisRun.Add(inst);
+
+		if (CreaturesInExpidition.Count < 6)
+			CreaturesInExpidition.Add(inst);
+
+
 		OnFoundCreature(capturedCreature);
 	}
 
