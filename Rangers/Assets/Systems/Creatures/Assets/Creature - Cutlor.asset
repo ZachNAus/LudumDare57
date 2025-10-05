@@ -17,8 +17,8 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: a98f13ec342d8434a8d549a682b75612, type: 3}
   desc: It's Cutlor
   sizeRangeCM: {x: 24, y: 56}
-  healthMaxAlly: 10
-  healthMaxEnemy: 50
+  healthMaxAlly: 30
+  healthMaxEnemy: 100
   enemyShapePool:
   - {fileID: 11400000, guid: 5166a6d88fe8c9c49a874685878885fd, type: 2}
   - {fileID: 11400000, guid: 4798ad93c5e6444458b39448492fc77f, type: 2}
