@@ -81,6 +81,7 @@ MonoBehaviour:
   creatureName: {fileID: 921569728107523376}
   attackHolder: {fileID: 9199138085067865519}
   attackPrefab: {fileID: 7701881587340712973, guid: 15c0e7cfef874dc4bbe8551523865946, type: 3}
+  activeAnimator: {fileID: 2967614638536212967}
 --- !u!114 &142573076899570588
 MonoBehaviour:
   m_ObjectHideFlags: 0

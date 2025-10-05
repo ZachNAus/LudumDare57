@@ -16,6 +16,8 @@ public class CreatureUI : MonoBehaviour
 	[SerializeField] HorizontalLayoutGroup attackHolder;
 	[SerializeField] SelectableShape attackPrefab;
 
+	[SerializeField] Animator activeAnimator;
+
 	List<SelectableShape> currentShapes = new List<SelectableShape>();
 
 	private void Awake()
@@ -32,6 +34,8 @@ public class CreatureUI : MonoBehaviour
 		creatureName.SetText(CurrentCreature.creatureName);
 
 		GridManager.OnShapeRemoved += OnShapeRemoved;
+
+		activeAnimator.speed = 0;
 	}
 
 	public void SetAttacks(List<ShapeData> attacks)
@@ -72,6 +76,8 @@ public class CreatureUI : MonoBehaviour
 			s.Enabled = false;
 
 		HasSelectedAttacks = true;
+
+		activeAnimator.speed = 1;
 	}
 
 	void OnShapeRemoved(ShapeData shape, string creatureUniqueID)
@@ -89,6 +95,8 @@ public class CreatureUI : MonoBehaviour
 			s.Enabled = true;
 
 		HasSelectedAttacks = false;
+
+		activeAnimator.speed = 0;
 	}
 
 	void RemoveShapeFromThisCreature()
@@ -100,8 +108,6 @@ public class CreatureUI : MonoBehaviour
 			gridManager.RemoveShapesByCreature(CurrentCreature.uniqueId);
 		}
 
-		// Enable all current attack shapes for this creature
-		foreach (var s in currentShapes)
-			s.Enabled = true;
+		DeselectedAttacks();
 	}
 }
