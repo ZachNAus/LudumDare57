@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13b0b700001ff794e808821bedb1c700, type: 3}
-  m_Name: Creature - Orbuncle
+  m_Name: Creature - Cutlor
   m_EditorClassIdentifier: 
   uniqueId: 
-  creatureName: Orbuncle
-  sprite: {fileID: 21300000, guid: c21ea51fcfa9e5c4aa781dd295484c9f, type: 3}
-  desc: I'm just a wee lad
+  creatureName: Cutlor
+  sprite: {fileID: 21300000, guid: a98f13ec342d8434a8d549a682b75612, type: 3}
+  desc: It's Cutlor
   sizeRangeCM: {x: 24, y: 56}
   healthMaxAlly: 10
   healthMaxEnemy: 50
   enemyShapePool:
   - {fileID: 11400000, guid: 8b825c83b05b05f41ab41b86bde8fe76, type: 2}
   allyShapePool:
-  - {fileID: 11400000, guid: ca882eb80c387114c95a2a79131b5e54, type: 2}
-  - {fileID: 11400000, guid: 6070d3340610031468211511012da5dc, type: 2}
-  - {fileID: 11400000, guid: be13ab0d3fea0bc4ab9c9b0facd57740, type: 2}
-  - {fileID: 11400000, guid: acc0b672eb38b8446803e5da049fd280, type: 2}
-  - {fileID: 11400000, guid: cfd02cab6a4a6f842a6ce72f72b27099, type: 2}
-  - {fileID: 11400000, guid: 46e036ea45a984147a554a263a499104, type: 2}
+  - {fileID: 11400000, guid: 1ff8d8670e770fa4395439f2ce101a8b, type: 2}
+  - {fileID: 11400000, guid: 99ae8523e4c38db43ac90db85b20f046, type: 2}
+  - {fileID: 11400000, guid: 40c75b18f79e5b546a94ca9d48b3f16f, type: 2}
+  - {fileID: 11400000, guid: 4a783e75cfff7144e81ca9f39d5c5267, type: 2}
+  - {fileID: 11400000, guid: 545928ce4c1f2ad4d98c56987e8cfd12, type: 2}
+  - {fileID: 11400000, guid: eba7e1a6b75895749b83546964518c42, type: 2}
   currentShapePool: []
