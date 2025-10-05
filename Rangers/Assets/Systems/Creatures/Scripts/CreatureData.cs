@@ -51,7 +51,9 @@ public class CreatureData : ScriptableObject
 		sb.Append($"Size : {CreatureSize}cm\n");
 
 		string gender = IsBoy ? "Male" : "Female";
-		sb.Append($"Gender : {gender}\n\n");
+		sb.Append($"Gender : {gender}\n");
+
+		sb.Append($"Health : {healthMaxAlly}\n\n");
 
 		sb.Append(desc);
 

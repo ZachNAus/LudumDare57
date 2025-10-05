@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
 	{
 		var creature = OwnedCreaturePage.instance.allCreatures.GetRandom();
 
-		if (OwnedCreaturePage.instance.OwnedCreaturesThisRun.Count <= 3)
+		if (OwnedCreaturePage.instance.OwnedCreaturesThisRun.Count <= firstExpeditionCreatures.Count)
 		{
 			creature = firstExpeditionCreatures[CombatsDoneThisExpdition];
 		}
