@@ -18,7 +18,7 @@ MonoBehaviour:
   desc: Ray
   sizeRangeCM: {x: 24, y: 56}
   healthMaxAlly: 10
-  healthMaxEnemy: 60
+  healthMaxEnemy: 30
   enemyShapePool:
   - {fileID: 11400000, guid: 4dab9e7d2de69d04db5a0c96d7a80fae, type: 2}
   - {fileID: 11400000, guid: 179bb92bb5c465c4cade5b84ba32b697, type: 2}
