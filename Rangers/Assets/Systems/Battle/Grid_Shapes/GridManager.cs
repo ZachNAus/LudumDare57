@@ -153,6 +153,24 @@ public class GridManager : MonoBehaviour
         return cell;
     }
 
+    public List<CellFX> GetAllCellsInState(CellState state)
+	{
+        List<CellFX> result = new List<CellFX>();
+
+        foreach (var kvp in cells)
+        {
+            Vector2Int coord = kvp.Key;
+            CellFX cell = kvp.Value;
+
+            if (GetCellState(coord) == state)
+            {
+                result.Add(cell);
+            }
+        }
+
+        return result;
+	}
+
     [Button("Add shape")]
     public void AddShape(ShapeData shape, Vector2Int baseLocation, bool enemyTile)
 	{

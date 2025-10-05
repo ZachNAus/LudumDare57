@@ -57,4 +57,9 @@ public class CreatureData : ScriptableObject
 		if (toRemove)
 			currentShapePool.Remove(toRemove);
 	}
+
+	public void EmptyPool()
+	{
+		currentShapePool.Clear();
+	}
 }
