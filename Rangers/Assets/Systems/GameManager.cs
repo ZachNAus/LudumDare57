@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
 	[Header("Gameplay")]
 	[SerializeField] CreatureData startingCreature;
 
+	[SerializeField] List<CreatureData> firstExpeditionCreatures;
+
 	public static GameManager instance;
 
 	private void Awake()
@@ -63,7 +65,14 @@ public class GameManager : MonoBehaviour
 
 	public void CharacterSelect()
 	{
-		CurrentEnemy = Instantiate(OwnedCreaturePage.instance.allCreatures.GetRandom());
+		var creature = OwnedCreaturePage.instance.allCreatures.GetRandom();
+
+		if(OwnedCreaturePage.instance.OwnedCreaturesThisRun.Count <= 3)
+		{
+			creature = firstExpeditionCreatures[CombatsDoneThisExpdition];
+		}
+
+		CurrentEnemy = Instantiate(creature);
 		CurrentEnemy.FirstTimeSetup();
 
 		mainMenu.SetActive(false);
