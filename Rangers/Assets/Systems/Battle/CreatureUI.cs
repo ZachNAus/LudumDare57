@@ -16,13 +16,21 @@ public class CreatureUI : MonoBehaviour
 	[SerializeField] HorizontalLayoutGroup attackHolder;
 	[SerializeField] SelectableShape attackPrefab;
 
+	[SerializeField] Animator activeAnimator;
+
 	List<SelectableShape> currentShapes = new List<SelectableShape>();
 
 	private void Awake()
 	{
 		btn.onClick.AddListener(RemoveShapeFromThisCreature);
+		GridManager.OnAllTilesCleared -= StopAnimator;
+		GridManager.OnAllTilesCleared += StopAnimator;
 	}
-	
+	private void OnDestroy()
+	{
+		GridManager.OnAllTilesCleared -= StopAnimator;
+	}
+
 
 	public void Initialise(CreatureData creatureInst)
 	{
@@ -32,6 +40,8 @@ public class CreatureUI : MonoBehaviour
 		creatureName.SetText(CurrentCreature.creatureName);
 
 		GridManager.OnShapeRemoved += OnShapeRemoved;
+
+		activeAnimator.speed = 0;
 	}
 
 	public void SetAttacks(List<ShapeData> attacks)
@@ -72,6 +82,8 @@ public class CreatureUI : MonoBehaviour
 			s.Enabled = false;
 
 		HasSelectedAttacks = true;
+
+		activeAnimator.speed = 1;
 	}
 
 	void OnShapeRemoved(ShapeData shape, string creatureUniqueID)
@@ -89,6 +101,14 @@ public class CreatureUI : MonoBehaviour
 			s.Enabled = true;
 
 		HasSelectedAttacks = false;
+
+		if(activeAnimator != null)
+			activeAnimator.speed = 0;
+	}
+
+	void StopAnimator()
+	{
+		activeAnimator.speed = 0;
 	}
 
 	void RemoveShapeFromThisCreature()
@@ -100,8 +120,6 @@ public class CreatureUI : MonoBehaviour
 			gridManager.RemoveShapesByCreature(CurrentCreature.uniqueId);
 		}
 
-		// Enable all current attack shapes for this creature
-		foreach (var s in currentShapes)
-			s.Enabled = true;
+		DeselectedAttacks();
 	}
 }

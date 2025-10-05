@@ -341,7 +341,9 @@ public class GridManager : MonoBehaviour
         appliedShapes.Clear();
         cellOccupancy.Clear();
         UpdateDrawGrid();
-	}
+
+        OnAllTilesCleared?.Invoke();
+    }
 
     /// <summary>
     /// Called when a LineFX cell is clicked
@@ -426,6 +428,7 @@ public class GridManager : MonoBehaviour
 		}
 	}
 
+    public static event System.Action OnAllTilesCleared;
     public static event System.Action<ShapeData, string> OnShapeRemoved;
 
     /// <summary>
