@@ -82,7 +82,7 @@ public class CreatureData : ScriptableObject
 
 	private void RemoveFromPool(ShapeData shape)
 	{
-		var toRemove = currentShapePool.FirstOrDefault(x => x.uniqueID == shape.uniqueID);
+		var toRemove = currentShapePool.FirstOrDefault(x => x.name == shape.name);
 
 		if (toRemove)
 			currentShapePool.Remove(toRemove);
