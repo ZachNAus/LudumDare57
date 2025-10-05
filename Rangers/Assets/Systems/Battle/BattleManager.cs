@@ -61,6 +61,9 @@ public class BattleManager : MonoBehaviour
 
 	[SerializeField] Button dmgNumbersToggleBtn;
 
+	[Header("Extra Combat settings")]
+	[SerializeField] bool adjacentAlliesReduceDmg;
+
 	[ReadOnly]
 	public bool showDamageNumbers = false;
 
@@ -208,6 +211,7 @@ public class BattleManager : MonoBehaviour
                 new Vector2Int(1, 0)    // right
             };
 
+			int alliesAdjacent = 0;
 			foreach (var dir in directions)
 			{
 				Vector2Int adjacentPos = cell.GridCoordinate + dir;
@@ -217,12 +221,17 @@ public class BattleManager : MonoBehaviour
 				{
 					adjacentCount++;
 				}
+
+				if (adjacentAlliesReduceDmg && GridManager.instance.GetCellState(adjacentPos) == GridManager.CellState.ally)
+				{
+					alliesAdjacent++;
+				}
 			}
 
 			// Deal 1 damage base, plus 1 for each adjacent cell
 			if (adjacentCount > 0)
 			{
-				totalDamage += 1 + adjacentCount;
+				totalDamage += Mathf.Max(1 + adjacentCount - alliesAdjacent, 1);
 			}
 			else
 			{
@@ -302,6 +311,7 @@ public class BattleManager : MonoBehaviour
 		foreach (var cell in enemyCells)
 		{
 			int adjacentCount = 0;
+			int alliesAdjacent = 0;
 
 			// Check all 4 adjacent directions (up, down, left, right)
 			Vector2Int[] directions = new Vector2Int[]
@@ -321,10 +331,15 @@ public class BattleManager : MonoBehaviour
 				{
 					adjacentCount++;
 				}
+
+				if (adjacentAlliesReduceDmg && GridManager.instance.GetCellState(adjacentPos) == GridManager.CellState.ally)
+				{
+					alliesAdjacent++;
+				}
 			}
 
 			// Calculate damage: 1 base + adjacentCount
-			int damage = 1 + adjacentCount;
+			int damage = Mathf.Max(1 + adjacentCount - alliesAdjacent, 1);
 
 			if (damage > 0)
 			{

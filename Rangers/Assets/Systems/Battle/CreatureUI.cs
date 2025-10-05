@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class CreatureUI : MonoBehaviour
 {
+	[SerializeField] Button btn;
+
 	public CreatureData CurrentCreature { get; private set; }
 
 	[SerializeField] Image creatureSprite;
@@ -15,6 +17,12 @@ public class CreatureUI : MonoBehaviour
 	[SerializeField] SelectableShape attackPrefab;
 
 	List<SelectableShape> currentShapes = new List<SelectableShape>();
+
+	private void Awake()
+	{
+		btn.onClick.AddListener(RemoveShapeFromThisCreature);
+	}
+	
 
 	public void Initialise(CreatureData creatureInst)
 	{
@@ -81,5 +89,19 @@ public class CreatureUI : MonoBehaviour
 			s.Enabled = true;
 
 		HasSelectedAttacks = false;
+	}
+
+	void RemoveShapeFromThisCreature()
+	{
+		// Remove all shapes placed by this creature on the grid
+		var gridManager = GridManager.instance;
+		if (gridManager != null)
+		{
+			gridManager.RemoveShapesByCreature(CurrentCreature.uniqueId);
+		}
+
+		// Enable all current attack shapes for this creature
+		foreach (var s in currentShapes)
+			s.Enabled = true;
 	}
 }

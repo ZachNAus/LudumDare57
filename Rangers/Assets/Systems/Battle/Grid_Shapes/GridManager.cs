@@ -429,6 +429,21 @@ public class GridManager : MonoBehaviour
     public static event System.Action<ShapeData, string> OnShapeRemoved;
 
     /// <summary>
+    /// Remove all shapes placed by a specific creature
+    /// </summary>
+    public void RemoveShapesByCreature(string creatureUniqueID)
+	{
+        var shapesToRemove = appliedShapes.Where(kvp => kvp.Value.creatureUniqueID == creatureUniqueID && kvp.Value.allyTile)
+            .Select(kvp => kvp.Key)
+            .ToList();
+
+        foreach (var shape in shapesToRemove)
+		{
+            RemoveSingleShape(shape);
+		}
+	}
+
+    /// <summary>
     /// Remove a single shape from the grid
     /// </summary>
     private void RemoveSingleShape(ShapeData shape)
