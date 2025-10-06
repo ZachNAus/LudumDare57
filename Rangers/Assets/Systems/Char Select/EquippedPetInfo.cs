@@ -40,6 +40,8 @@ public class EquippedPetInfo : MonoBehaviour
 
         ActiveShapeUI.Clear();
 
+        minorUI.Spin = Creature != null;
+
         if (Creature)
 		{
             foreach(var shape in Creature.allyShapePool)

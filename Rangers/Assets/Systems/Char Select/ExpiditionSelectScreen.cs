@@ -18,6 +18,7 @@ public class ExpiditionSelectScreen : MonoBehaviour
 	[Header("Owned")]
 	[SerializeField] Transform selectableAllyHolder;
 	[SerializeField] CharacterMinorUI selectableAllyPrefab;
+	List<CharacterMinorUI> currentSelectableAllies = new List<CharacterMinorUI>();
 	//[SerializeField] SelectableAllyUI selectableAllyPrefab;
 	
 	[Header("Equipped")]
@@ -42,10 +43,12 @@ public class ExpiditionSelectScreen : MonoBehaviour
 		equippedAllyObjects.Clear();
 
 		selectableAllyHolder.DestroyAllChildren();
+		currentSelectableAllies.Clear();
 		foreach (var ally in OwnedCreaturePage.instance.OwnedCreaturesThisRun)
 		{
 			var inst = Instantiate(selectableAllyPrefab, selectableAllyHolder);
 			inst.Setup(ally, TryEquip);
+			currentSelectableAllies.Add(inst);
 		}
 
 		equippedAllyHolder.DestroyAllChildren();
@@ -85,11 +88,13 @@ public class ExpiditionSelectScreen : MonoBehaviour
 		OwnedCreaturePage.instance.CreaturesInExpidition.Add(creature);
 
 		ui.Punch();
+		ui.Spin = true;
 
 		var toEdit = equippedAllyObjects.First(x => x.Creature == null);
 
 		toEdit.SetCreature(creature);
 		toEdit.Punch();
+		toEdit.Spin = true;
 
 		UpdateDeployTxt();
 
@@ -106,8 +111,11 @@ public class ExpiditionSelectScreen : MonoBehaviour
 		{
 			ui.SetCreature(null);
 			ui.Punch();
+			ui.Spin = false;
 			OwnedCreaturePage.instance.CreaturesInExpidition.Remove(creature);
 			UpdateDeployTxt();
+
+			currentSelectableAllies.First(x => x.Creature.uniqueId == creature.uniqueId).Spin = false;
 		}
 	}
 
