@@ -17,7 +17,14 @@ MonoBehaviour:
   sprite_base: {fileID: 21300000, guid: 6e75eaca2ed3fc046a1bcdf6604a8ac8, type: 3}
   sprite_shiny: {fileID: 21300000, guid: 93f46856e26e829449fd440267f36b76, type: 3}
   allLogs:
-  - NO ONE HAS GIVEN ME LOGS
+  - A large aquatic creature with a dangerous and very scary tail. It seems capable
+    of surviving just fine outside of water, which some people might find terrifying.
+  - Shredray isn't out to deceive anyone; one look at it and its obvious that it
+    gets the name from its tail. This creature is capable of stabbing even through
+    steel with little resistance.
+  - Caring for a Shredray would be a daunting task, as it requires an aquatic habitat
+    and plenty of attention. There are those who swear by it, however, raising it
+    up as the greatest creature.
   sizeRangeCM: {x: 150, y: 200}
   healthRange: {x: 15, y: 30}
   healthMaxAlly: 20

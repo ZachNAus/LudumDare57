@@ -17,7 +17,13 @@ MonoBehaviour:
   sprite_base: {fileID: 21300000, guid: 98f21d86967fa0b4789ef5e9d84b365a, type: 3}
   sprite_shiny: {fileID: 21300000, guid: 5ed3354ce30411b4e976169a5020e4d7, type: 3}
   allLogs:
-  - NO ONE HAS GIVEN ME LOGS
+  - An alarmingly large moth creature, with a striking colour scheme. The inside
+    of its wings are covered in markings that resemble the magic circles that Rune
+    Rangers use, which might suggest an interesting adaptation over time?
+  - Turns out those markings aren't just for show. Runesect has managed to learn
+    some of the spells we use, making it a very dangerous foe. Fortunately, it doesn't
+    seem capable of using the Capture spell. Can you imagine?
+  - It is learning from me.
   sizeRangeCM: {x: 5, y: 15}
   healthRange: {x: 25, y: 45}
   healthMaxAlly: 45

@@ -17,7 +17,12 @@ MonoBehaviour:
   sprite_base: {fileID: 21300000, guid: 22120e5ffe73edf42afd6a849ef09b76, type: 3}
   sprite_shiny: {fileID: 21300000, guid: e10942742f7faba42b1bb46d37b0b437, type: 3}
   allLogs:
-  - NO ONE HAS GIVEN ME LOGS
+  - These creatures shed the crystals on their back in place for new ones, meaning
+    if you find stray crystals around, there is one nearby.
+  - When moving downhill, it seems like they enjoy curling into a spiky ball and
+    rolling down. I've seen a couple with their crystal backs stuck to trees.
+  - In order to keep up with the energy needed for growing so many crystals on their
+    back, they seem to be constantly migrating for berries.
   sizeRangeCM: {x: 24, y: 56}
   healthRange: {x: 50, y: 60}
   healthMaxAlly: 50

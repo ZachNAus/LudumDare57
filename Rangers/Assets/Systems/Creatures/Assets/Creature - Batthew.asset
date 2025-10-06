@@ -17,7 +17,14 @@ MonoBehaviour:
   sprite_base: {fileID: 21300000, guid: 31f2ed46cb37cd74abb87ab8bdf42cb7, type: 3}
   sprite_shiny: {fileID: 21300000, guid: 397925ac27296b346bb48182e4371f64, type: 3}
   allLogs:
-  - NO ONE HAS GIVEN ME LOGS
+  - A red bat creature that flies around at high speeds. While some are surprised
+    by its name, it is apparently common knowledge that Bat is short for Batthew.
+  - Batthew is a capable user of fire magic, which can make it pretty scary to encounter
+    when coupled with its high speed. It is famous for its ability to rapidly launch
+    fireballs mid-flight.
+  - Batthew loves warm and dark places, but is rather sensitive to noise. If you
+    stay quiet and don't alarm it, it can be a great companion. For this reason,
+    Batthew is a very popular creature among certain crowds.
   sizeRangeCM: {x: 14, y: 26}
   healthRange: {x: 25, y: 45}
   healthMaxAlly: 45
