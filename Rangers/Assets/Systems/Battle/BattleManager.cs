@@ -75,6 +75,10 @@ public class BattleManager : MonoBehaviour
 	[Header("Extra Combat settings")]
 	[SerializeField] bool adjacentAlliesReduceDmg;
 
+	[Space]
+
+	[SerializeField] GameObject firstTimeTutorial;
+
 	[ReadOnly]
 	public bool showDamageNumbers = false;
 
@@ -95,6 +99,12 @@ public class BattleManager : MonoBehaviour
 
 	public void Init(CreatureData enemy, List<CreatureData> allies)
 	{
+		if (PlayerPrefs.GetInt("FIRST TIME TUTORIAL", 0) == 0)
+		{
+			firstTimeTutorial.SetActive(true);
+			PlayerPrefs.SetInt("FIRST TIME TUTORIAL", 1);
+		}
+
 		SoundManager.instance.SwapMusic(true);
 
 		turnsTaken = 0;
