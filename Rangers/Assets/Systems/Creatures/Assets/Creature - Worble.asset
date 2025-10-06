@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13b0b700001ff794e808821bedb1c700, type: 3}
+  m_Name: Creature - Worble
+  m_EditorClassIdentifier: 
+  uniqueId: 
+  creatureName: Worble
+  sprite_base: {fileID: 21300000, guid: a169ed3f8eca7b7488f9a5cffcfcf704, type: 3}
+  sprite_shiny: {fileID: 21300000, guid: 22229f19e55edc74398af06257723f9b, type: 3}
+  allLogs:
+  - NO ONE HAS GIVEN ME LOGS
+  sizeRangeCM: {x: 14, y: 26}
+  healthRange: {x: 40, y: 50}
+  healthMaxAlly: 45
+  healthMaxEnemy: 110
+  enemyShapePool:
+  - {fileID: 11400000, guid: 279e490f429531847ae39be87148acd8, type: 2}
+  - {fileID: 11400000, guid: 29bedcec7754cc84d9149b9348374c0a, type: 2}
+  - {fileID: 11400000, guid: e950477d7896898488d052f9d72d57f5, type: 2}
+  allyShapePool:
+  - {fileID: 11400000, guid: 3af1afc9546124c4d8a4bf2e7d38ee78, type: 2}
+  - {fileID: 11400000, guid: 9903edbed189c2649bbec1d3d49184f0, type: 2}
+  - {fileID: 11400000, guid: ae5dd02a7c4a39248b090262a987a302, type: 2}
+  - {fileID: 11400000, guid: eadb6679822869c4a929e33898b0a41c, type: 2}
+  currentShapePool: []
