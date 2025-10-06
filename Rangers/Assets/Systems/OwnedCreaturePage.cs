@@ -39,9 +39,9 @@ public class OwnedCreaturePage : MonoBehaviour
 		CreaturesInExpidition.Clear();
 	}
 
-	public void AddCreature(CreatureData capturedCreature)
+	public void AddCreature(CreatureData capturedCreature, bool instantiate)
 	{
-		var inst = Instantiate(capturedCreature);
+		var inst = instantiate ? Instantiate(capturedCreature) : capturedCreature;
 
 		inst.FirstTimeSetup();
 
@@ -56,4 +56,7 @@ public class OwnedCreaturePage : MonoBehaviour
 		OnFoundCreature(capturedCreature);
 	}
 
+	/////////////////////////////////////////////////////
+
+	public List<ShapeData> globalShapePool; 
 }

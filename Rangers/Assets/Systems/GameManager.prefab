@@ -77,3 +77,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 188600dc019fc4b458930c5173bb7aed, type: 2}
   OwnedCreaturesThisRun: []
   CreaturesInExpidition: []
+  globalShapePool:
+  - {fileID: 11400000, guid: 1ff8d8670e770fa4395439f2ce101a8b, type: 2}
+  - {fileID: 11400000, guid: 30ed51f965465d34a9565c6950cba3ee, type: 2}
+  - {fileID: 11400000, guid: ca882eb80c387114c95a2a79131b5e54, type: 2}
+  - {fileID: 11400000, guid: 8350a0b17bad37548b1bc57b73089089, type: 2}
+  - {fileID: 11400000, guid: 99ae8523e4c38db43ac90db85b20f046, type: 2}
+  - {fileID: 11400000, guid: 39d96f5a98affc6428e502ea761f637b, type: 2}
+  - {fileID: 11400000, guid: 6070d3340610031468211511012da5dc, type: 2}
+  - {fileID: 11400000, guid: 870dec36abfe166469185346d9e895f6, type: 2}
