@@ -38,6 +38,7 @@ public class ExpiditionSelectScreen : MonoBehaviour
 	private void OnEnable()
 	{
 		OwnedCreaturePage.instance.CreaturesInExpidition.Clear();
+		OwnedCreaturePage.instance.CreaturedFoundThisExpedition.Clear();
 		UpdateDeployTxt();
 
 		equippedAllyObjects.Clear();
