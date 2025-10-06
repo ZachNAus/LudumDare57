@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueId: 
   creatureName: Mingorg
-  sprite: {fileID: 21300000, guid: 22120e5ffe73edf42afd6a849ef09b76, type: 3}
-  desc: Short for mineral gorgon
+  sprite_base: {fileID: 21300000, guid: 22120e5ffe73edf42afd6a849ef09b76, type: 3}
+  sprite_shiny: {fileID: 21300000, guid: e10942742f7faba42b1bb46d37b0b437, type: 3}
+  allLogs:
+  - NO ONE HAS GIVEN ME LOGS
   sizeRangeCM: {x: 24, y: 56}
+  healthRange: {x: 20, y: 30}
   healthMaxAlly: 50
   healthMaxEnemy: 20
   enemyShapePool:

@@ -15,10 +15,14 @@ public class CreatureData : ScriptableObject
 
 	public string creatureName;
 
-	public Sprite sprite;
+	[SerializeField] Sprite sprite_base;
+	[SerializeField] Sprite sprite_shiny;
 
-	[TextArea(3, 10)]
-	public string desc;
+	public Sprite sprite => IsShiny ? sprite_shiny : sprite_base;
+
+	public bool IsShiny { get; private set; }
+
+	public string[] allLogs;
 
 	[SerializeField] Vector2 sizeRangeCM = new Vector2(24, 56);
 	public int CreatureSize { get; private set; }
@@ -28,6 +32,8 @@ public class CreatureData : ScriptableObject
 	[Space]
 
 	[FoldoutGroup("Health")]
+	[SerializeField] Vector2 healthRange = new Vector2(20, 30);
+	[ReadOnly]
 	public float healthMaxAlly;
 	[FoldoutGroup("Health")]
 	public float healthMaxEnemy;
@@ -44,20 +50,27 @@ public class CreatureData : ScriptableObject
 	[Tooltip("What attacks they have left")]
 	public List<ShapeData> currentShapePool = new List<ShapeData>();
 
-	public string GetFullDescription()
+	public string GetMostRecentLog()
 	{
-		StringBuilder sb = new StringBuilder();
+		//StringBuilder sb = new StringBuilder();
+		//
+		//sb.Append($"Size : {CreatureSize}cm\n");
+		//
+		//string gender = IsBoy ? "Male" : "Female";
+		//sb.Append($"Gender : {gender}\n");
+		//
+		//sb.Append($"Health : {healthMaxAlly}\n\n");
+		//
+		//sb.Append(desc);
+		//
+		//return sb.ToString();
 
-		sb.Append($"Size : {CreatureSize}cm\n");
+		var logNumber = OwnedCreaturePage.instance.CreaturesFound(this) - 1;
 
-		string gender = IsBoy ? "Male" : "Female";
-		sb.Append($"Gender : {gender}\n");
-
-		sb.Append($"Health : {healthMaxAlly}\n\n");
-
-		sb.Append(desc);
-
-		return sb.ToString();
+		if (logNumber >= allLogs.Length)
+			return "You have learnt everything about this creature.";
+		else
+			return allLogs[logNumber];
 	}
 
 	public ShapeData GetRandomAttack(bool isEnemy)
@@ -102,6 +115,10 @@ public class CreatureData : ScriptableObject
 
 		CreatureSize = Mathf.RoundToInt(Random.Range(sizeRangeCM.x, sizeRangeCM.y));
 		IsBoy = Random.value > 0.5f;
+
+		healthMaxAlly = Mathf.Round(Random.Range(healthRange.x, healthRange.y));
+
+		IsShiny = Random.value > 0.9f;
 
 		RandomisePool();
 	}
