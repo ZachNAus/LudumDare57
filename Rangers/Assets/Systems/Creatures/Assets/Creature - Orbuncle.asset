@@ -28,7 +28,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f27f85af7d04e6c428878ed95c19fe90, type: 2}
   allyShapePool:
   - {fileID: 11400000, guid: be13ab0d3fea0bc4ab9c9b0facd57740, type: 2}
-  - {fileID: 11400000, guid: acc0b672eb38b8446803e5da049fd280, type: 2}
+  - {fileID: 11400000, guid: 6070d3340610031468211511012da5dc, type: 2}
   - {fileID: 11400000, guid: cfd02cab6a4a6f842a6ce72f72b27099, type: 2}
   - {fileID: 11400000, guid: 46e036ea45a984147a554a263a499104, type: 2}
   currentShapePool: []
