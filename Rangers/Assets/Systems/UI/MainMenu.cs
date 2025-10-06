@@ -16,11 +16,11 @@ public class MainMenu : MonoBehaviour
 
 	IEnumerator Wait()
 	{
-		for(int i =0; i < 2; i++)
+		for(int i = 0; i < 2; i++)
 		{
 			yield return null;
 		}
 
-		foundGuys.SetText($"Found: {OwnedCreaturePage.instance.GetFoundCreatureCount()}/{OwnedCreaturePage.instance.allCreatures.Count}");
+		foundGuys.SetText($"Discovered: {OwnedCreaturePage.instance.GetFoundCreatureCount()}/{OwnedCreaturePage.instance.allCreatures.Count}");
 	}
 }
