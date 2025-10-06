@@ -106,6 +106,8 @@ public class CreatureUI : MonoBehaviour
 
 	public void DeselectedAttacks()
 	{
+		HasSelectedAttacks = false;
+
 		foreach (var s in currentShapes)
 		{
 			s.Enabled = true;
@@ -119,8 +121,6 @@ public class CreatureUI : MonoBehaviour
 				Debug.LogError(e);
 			}
 		}
-
-		HasSelectedAttacks = false;
 
 		if(activeAnimator != null)
 			activeAnimator.speed = 0;

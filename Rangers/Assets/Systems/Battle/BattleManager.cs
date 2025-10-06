@@ -48,6 +48,7 @@ public class BattleManager : MonoBehaviour
 	[Space]
 
 	[SerializeField] Button goBtn;
+	TextMeshProUGUI goTxt;
 
 	[Space]
 
@@ -70,6 +71,8 @@ public class BattleManager : MonoBehaviour
 	private void Awake()
 	{
 		goBtn.onClick.AddListener(Go);
+		goTxt = goBtn.GetComponentInChildren<TextMeshProUGUI>();
+
 		dmgNumbersToggleBtn.onClick.AddListener(ToggleDamageNumbers);
 
 		SetActive(false);
@@ -138,7 +141,6 @@ public class BattleManager : MonoBehaviour
 	public void PlayerTurnInit()
 	{
 		//Create options for shapes
-
 		foreach (var ally in SelectedAllies)
 		{
 			var atks = new List<ShapeData>();
@@ -151,6 +153,7 @@ public class BattleManager : MonoBehaviour
 			}
 
 			ally.allyUI.SetAttacks(atks);
+			ally.allyUI.DeselectedAttacks();
 		}
 	}
 
@@ -282,8 +285,22 @@ public class BattleManager : MonoBehaviour
 		allyDamagePrediction.SetText(GetDamageDealt().ToString());
 		enemyDamagePrediction.SetText(CalculateDamageTaken().ToString());
 
+		StartCoroutine(Co_waitTxt());
+
 		UpdateDamageNumbersOnGrid();
 	}
+
+	IEnumerator Co_waitTxt(int framesToWait = 1)
+	{
+		for(int i = 0; i < framesToWait; i++)
+			yield return null;
+
+		var allyCount = SelectedAllies.Count;
+		var attackingAllies = SelectedAllies.Where(x => x.allyUI.HasSelectedAttacks).Count();
+
+		goTxt.SetText($"Go! ({attackingAllies}/{allyCount})");
+	}
+
 
 	void ToggleDamageNumbers()
 	{
