@@ -59,7 +59,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellSize: 300
   scrollSpeedX: 0
-  scrollSpeedY: 10
+  scrollSpeedY: 70
+  startingYOffset: 900
   cellPrefab: {fileID: 9055456595122995132, guid: 300e5264ecedb9449bc435b711b3ab55, type: 3}
   spriteAlpha: 1
 --- !u!1 &373931185162844148
