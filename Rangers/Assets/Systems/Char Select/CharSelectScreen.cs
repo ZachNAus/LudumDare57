@@ -84,6 +84,8 @@ public class CharSelectScreen : MonoBehaviour
 		if (selectedAllies.Any(x => x.uniqueId == creature.uniqueId))
 			return;
 
+		SoundManager.instance.PlaySoundEffect(AudioType.AddToTeam);
+
 		ui.Punch();
 		ui.Spin = true;
 
@@ -98,6 +100,8 @@ public class CharSelectScreen : MonoBehaviour
 			return;
 
 		selectedAllies.Remove(creature);
+
+		SoundManager.instance.PlaySoundEffect(AudioType.RemoveFromTeam);
 
 		info.Punch();
 

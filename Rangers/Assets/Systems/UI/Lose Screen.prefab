@@ -569,6 +569,7 @@ GameObject:
   - component: {fileID: 7390799187178811433}
   - component: {fileID: 8236951545667760656}
   - component: {fileID: 8284646029058496357}
+  - component: {fileID: 6808247287924087645}
   m_Layer: 5
   m_Name: Try Again
   m_TagString: Untagged
@@ -691,3 +692,15 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &6808247287924087645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8829523108494260464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ddea5dd41bda5942b455390a4589790, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

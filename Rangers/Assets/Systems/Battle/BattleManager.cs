@@ -95,6 +95,8 @@ public class BattleManager : MonoBehaviour
 
 	public void Init(CreatureData enemy, List<CreatureData> allies)
 	{
+		SoundManager.instance.SwapMusic(true);
+
 		turnsTaken = 0;
 		SetActive(true);
 
@@ -171,6 +173,8 @@ public class BattleManager : MonoBehaviour
 
 		turnsTaken++;
 
+		SoundManager.instance.PlaySoundEffect(AudioType.RoundStart);
+
 		turnCounter.SetText($"Wave: {GameManager.instance.CombatsDoneThisExpdition+1}/{GameManager.instance.CombatsInExpedition} Turn: {turnsTaken}");
 	}
 
@@ -185,6 +189,8 @@ public class BattleManager : MonoBehaviour
 			if (ally.allyUI.HasSelectedAttacks == false)
 				return;
 		}
+
+		SoundManager.instance.PlaySoundEffect(AudioType.HitGo);
 
 		StartCoroutine(Co_RunSim());
 	}
@@ -206,12 +212,18 @@ public class BattleManager : MonoBehaviour
 			//longestTweenTime = Mathf.Max(longestTweenTime, cellDmg * tile.popTime);
 		}
 
+		SoundManager.instance.PlaySoundEffect(AudioType.TilesPunch);
+
+
 		yield return new WaitForSeconds(longestTweenTime);
 
 
 		CurrentAllyHealth -= CalculateDamageTaken();
 
 		allyCurrentHealth.SetText(CurrentAllyHealth.ToString());
+
+		SoundManager.instance.PlaySoundEffect(AudioType.HealthBarHit);
+
 
 		yield return allyHealthBar.DOFillAmount(CurrentAllyHealth / SelectedAllies.Sum(x => x.allyData.healthMaxAlly), 0.5f).WaitForCompletion();
 		
@@ -225,8 +237,12 @@ public class BattleManager : MonoBehaviour
 				tile.Punch(true);
 			}
 
+			SoundManager.instance.PlaySoundEffect(AudioType.TilesPunch);
+
 			yield return new WaitForSeconds(0.5f);
 
+			SoundManager.instance.PlaySoundEffect(AudioType.HealthBarHit);
+			
 			//Do damage calculation
 			CurrentEnemyHealth -= GetDamageDealt();
 			enemyCurrentHealth.SetText(CurrentEnemyHealth.ToString());

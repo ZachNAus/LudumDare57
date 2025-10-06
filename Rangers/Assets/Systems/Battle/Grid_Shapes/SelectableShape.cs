@@ -208,6 +208,8 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 		rectTransform.position = worldPos;
 
 		shapeHolder.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutQuad);
+
+		SoundManager.instance.PlaySoundEffect(AudioType.PickupTile);
 	}
 
 	public void OnDrag(PointerEventData eventData)

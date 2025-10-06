@@ -192,6 +192,9 @@ public class GridManager : MonoBehaviour
 			creatureUniqueID = creatureUniqueID
 		};
 
+		if (!enemyTile)
+			SoundManager.instance.PlaySoundEffect(AudioType.PlaceTile);
+
 		// Track updated cells for pop effect
 		HashSet<Vector2Int> updatedCells = new HashSet<Vector2Int>();
 
@@ -492,6 +495,9 @@ public class GridManager : MonoBehaviour
 			Debug.LogWarning("GridManager: Attempted to remove shape that isn't in appliedShapes!");
 			return;
 		}
+
+		SoundManager.instance.PlaySoundEffect(AudioType.RemoveTile);
+
 
 		AppliedShapeData shapeData = appliedShapes[shape];
 		Vector2Int basePosition = shapeData.basePosition;
