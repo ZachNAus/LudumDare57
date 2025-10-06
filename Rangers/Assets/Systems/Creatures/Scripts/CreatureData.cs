@@ -15,8 +15,8 @@ public class CreatureData : ScriptableObject
 
 	public string creatureName;
 
-	[SerializeField] Sprite sprite_base;
-	[SerializeField] Sprite sprite_shiny;
+	public Sprite sprite_base;
+	public Sprite sprite_shiny;
 
 	public Sprite sprite => IsShiny ? sprite_shiny : sprite_base;
 
@@ -32,7 +32,7 @@ public class CreatureData : ScriptableObject
 	[Space]
 
 	[FoldoutGroup("Health")]
-	[SerializeField] Vector2 healthRange = new Vector2(20, 30);
+	public Vector2 healthRange = new Vector2(20, 30);
 	[ReadOnly]
 	public float healthMaxAlly;
 	[FoldoutGroup("Health")]
@@ -49,6 +49,24 @@ public class CreatureData : ScriptableObject
 	//[ReadOnly]
 	[Tooltip("What attacks they have left")]
 	public List<ShapeData> currentShapePool = new List<ShapeData>();
+
+	public string GetCurrentLog()
+	{
+		StringBuilder sb = new();
+
+		for (int i = 0; i < OwnedCreaturePage.instance.CreaturesFound(this); i++)
+		{
+			if (i > 0)
+				sb.Append("\n\n");
+
+			if (i >= allLogs.Length)
+				break;
+
+			sb.Append(allLogs[i]);
+		}
+
+		return sb.ToString();
+	}
 
 	public string GetMostRecentLog()
 	{

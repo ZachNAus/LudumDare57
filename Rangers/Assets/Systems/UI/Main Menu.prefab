@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2911224677491770221}
   - component: {fileID: 956285117308334838}
   - component: {fileID: 6716467914331859963}
+  - component: {fileID: 8917334591866919594}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -63,6 +64,18 @@ MonoBehaviour:
   startingYOffset: 900
   cellPrefab: {fileID: 9055456595122995132, guid: 300e5264ecedb9449bc435b711b3ab55, type: 3}
   spriteAlpha: 1
+--- !u!225 &8917334591866919594
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184225775005017444}
+  m_Enabled: 1
+  m_Alpha: 0.3
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &373931185162844148
 GameObject:
   m_ObjectHideFlags: 0

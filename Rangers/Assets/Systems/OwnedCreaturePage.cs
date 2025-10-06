@@ -31,6 +31,19 @@ public class OwnedCreaturePage : MonoBehaviour
 		PlayerPrefs.SetInt(creatureName.creatureName, PlayerPrefs.GetInt(creatureName.creatureName, 0) + 1);
 	}
 
+	public bool HasFoundShiny(CreatureData creatureName)
+	{
+		return PlayerPrefs.GetInt($"Shiny - {creatureName.creatureName}", 0) == 1;
+	}
+
+	public void TryFindShiny(CreatureData creatureName)
+	{
+		if (creatureName.IsShiny)
+		{
+			PlayerPrefs.SetInt($"Shiny - {creatureName.creatureName}", 1);
+		}
+	}
+
 	public int GetFoundCreatureCount()
 	{
 		int found = 0;
@@ -80,6 +93,7 @@ public class OwnedCreaturePage : MonoBehaviour
 
 			CreaturedFoundThisExpedition.Add(capturedCreature);
 		}
+		TryFindShiny(capturedCreature);
 	}
 
 	/////////////////////////////////////////////////////
