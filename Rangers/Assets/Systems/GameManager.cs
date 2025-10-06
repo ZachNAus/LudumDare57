@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
 		battleManager.SetActive(false);
 
 		//Add guy to team
-		OwnedCreaturePage.instance.AddCreature(CurrentEnemy);
+		OwnedCreaturePage.instance.AddCreature(CurrentEnemy, false);
 	}
 
 	public void NextWave()
@@ -141,7 +141,7 @@ public class GameManager : MonoBehaviour
 		CurrentEnemy = null;
 
 		OwnedCreaturePage.instance.ClearOwnedCreatures();
-		OwnedCreaturePage.instance.AddCreature(startingCreature);
+		OwnedCreaturePage.instance.AddCreature(startingCreature, true);
 	}
 
 	public void Quit()

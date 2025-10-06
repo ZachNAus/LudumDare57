@@ -10,17 +10,17 @@ public class CreatureData : ScriptableObject
 {
 	[ReadOnly]
 	public string uniqueId;
-	
+
 	[Space]
 
 	public string creatureName;
 
 	public Sprite sprite;
 
-	[TextArea(3,10)]
+	[TextArea(3, 10)]
 	public string desc;
 
-	[SerializeField] Vector2 sizeRangeCM = new Vector2(24,56);
+	[SerializeField] Vector2 sizeRangeCM = new Vector2(24, 56);
 	public int CreatureSize { get; private set; }
 
 	public bool IsBoy { get; private set; }
@@ -102,5 +102,28 @@ public class CreatureData : ScriptableObject
 
 		CreatureSize = Mathf.RoundToInt(Random.Range(sizeRangeCM.x, sizeRangeCM.y));
 		IsBoy = Random.value > 0.5f;
+
+		RandomisePool();
+	}
+
+	bool randomisedPool;
+	void RandomisePool()
+	{
+		if (randomisedPool)
+			return;
+
+		randomisedPool = true;
+
+		List<ShapeData> globalPool = new List<ShapeData>();
+		globalPool.AddRange(OwnedCreaturePage.instance.globalShapePool);
+
+		for (int i = 0; i < 2; i++)
+		{
+			var random = globalPool.GetRandom();
+
+			globalPool.Remove(random);
+
+			allyShapePool.Add(random);
+		}
 	}
 }

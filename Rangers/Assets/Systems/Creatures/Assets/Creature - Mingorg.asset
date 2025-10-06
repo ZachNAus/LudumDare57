@@ -24,8 +24,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 15fd62636bed9c94e8acb121a8276e79, type: 2}
   - {fileID: 11400000, guid: 40b1080b559597c43845b106f4e5498e, type: 2}
   allyShapePool:
-  - {fileID: 11400000, guid: 30ed51f965465d34a9565c6950cba3ee, type: 2}
-  - {fileID: 11400000, guid: 39d96f5a98affc6428e502ea761f637b, type: 2}
   - {fileID: 11400000, guid: 21a9b670770909848a82e86217eaa473, type: 2}
   - {fileID: 11400000, guid: a3321067e6c348e4bb3a5d0ba3996b9c, type: 2}
   - {fileID: 11400000, guid: 130cf2cc491a12148a417edc229bf6f0, type: 2}
