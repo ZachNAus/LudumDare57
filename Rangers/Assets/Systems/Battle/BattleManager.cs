@@ -131,6 +131,8 @@ public class BattleManager : MonoBehaviour
 
 		CurrentAllyHealth = SelectedAllies.Sum(x => x.allyData.healthMaxAlly);
 
+		SetDamageNumbersOn();
+
 		UpdateHealthBars(true);
 
 		EnemyTurn();
@@ -362,6 +364,11 @@ public class BattleManager : MonoBehaviour
 		goTxt.SetText($"Go! ({attackingAllies}/{allyCount})");
 	}
 
+	void SetDamageNumbersOn()
+	{
+		showDamageNumbers = true;
+		UpdateDamageNumbersOnGrid();
+	}
 
 	void ToggleDamageNumbers()
 	{
@@ -400,7 +407,10 @@ public class BattleManager : MonoBehaviour
 		{
 			int damage = (int)GetSingleTileDamage(cell);
 
-			if (damage > 0)
+			cell.SetDmgShowActive(true);
+			cell.PreviewDmg(damage);
+
+			/*if (damage > 0)
 			{
 				cell.SetDmgShowActive(true);
 				cell.PreviewDmg(damage);
@@ -409,6 +419,7 @@ public class BattleManager : MonoBehaviour
 			{
 				cell.SetDmgShowActive(false);
 			}
+			*/
 		}
 	}
 
