@@ -27,6 +27,8 @@ public class CreatureData : ScriptableObject
 	[Space]
 
 	[FoldoutGroup("Health")]
+	[SerializeField] Vector2 healthRange = new Vector2(20, 30);
+	[ReadOnly]
 	public float healthMaxAlly;
 	[FoldoutGroup("Health")]
 	public float healthMaxEnemy;
@@ -108,6 +110,8 @@ public class CreatureData : ScriptableObject
 
 		CreatureSize = Mathf.RoundToInt(Random.Range(sizeRangeCM.x, sizeRangeCM.y));
 		IsBoy = Random.value > 0.5f;
+
+		healthMaxAlly = Mathf.Round(Random.Range(healthRange.x, healthRange.y));
 
 		RandomisePool();
 	}
