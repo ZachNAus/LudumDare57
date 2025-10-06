@@ -100,6 +100,10 @@ public class GameManager : MonoBehaviour
 
 	public void OnLoseBattle()
 	{
+		SoundManager.instance.SwapMusic(false);
+
+		SoundManager.instance.PlaySoundEffect(AudioType.LoseEncounter);
+
 		loseScreen.SetActive(true);
 		battleManager.SetActive(false);
 	}
@@ -107,6 +111,10 @@ public class GameManager : MonoBehaviour
 
 	public void OnWinBattle()
 	{
+		SoundManager.instance.SwapMusic(false);
+
+		SoundManager.instance.PlaySoundEffect(AudioType.WinEncounter);
+
 		//Add guy to team
 		OwnedCreaturePage.instance.AddCreature(CurrentEnemy, false, true);
 		

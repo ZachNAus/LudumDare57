@@ -40,6 +40,8 @@ public class SoundManager : MonoBehaviour
 	[System.Serializable]
 	class AudioDict : SerializableDictionary<AudioType, AudioList> { }
 
+	public static SoundManager instance;
+
 	[System.Serializable]
 	class AudioList
 	{
@@ -48,6 +50,7 @@ public class SoundManager : MonoBehaviour
 
 	private void Awake()
 	{
+		instance = this;
 		SwapMusic(false);
 		PlayMusic();
 	}
@@ -55,6 +58,7 @@ public class SoundManager : MonoBehaviour
 	public void SwapMusic(bool battleMusic)
 	{
 		musicSource.clip = battleMusic ? BattleMusic.GetRandom() : nonBattleMusic.GetRandom();
+		musicSource.Play();
 	}
     public void PauseMusic()
 	{
@@ -62,6 +66,7 @@ public class SoundManager : MonoBehaviour
 	}
 	public void PlayMusic()
 	{
+		musicSource.Play();
 		musicSource.DOFade(1, 0.5f);
 	}
 
