@@ -19,7 +19,7 @@ MonoBehaviour:
   allLogs:
   - NO ONE HAS GIVEN ME LOGS
   sizeRangeCM: {x: 24, y: 56}
-  healthRange: {x: 20, y: 30}
+  healthRange: {x: 25, y: 40}
   healthMaxAlly: 25
   healthMaxEnemy: 75
   enemyShapePool:

@@ -136,6 +136,8 @@ public class CreatureData : ScriptableObject
 
 	void RandomisePool()
 	{
+		allyShapePool = allyShapePool.OrderByDescending(x => (int)x.attackType).ToList();
+
 		List<ShapeData> globalPool = new List<ShapeData>();
 		globalPool.AddRange(OwnedCreaturePage.instance.globalShapePool);
 

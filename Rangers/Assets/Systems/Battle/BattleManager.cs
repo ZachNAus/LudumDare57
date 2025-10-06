@@ -190,7 +190,7 @@ public class BattleManager : MonoBehaviour
 		{
 			//var cellDmg = GetSingleTileDamage(tile);
 			//tile.PunchMultiple(Mathf.RoundToInt(cellDmg));
-			tile.Punch();
+			tile.Punch(true);
 
 			//longestTweenTime = Mathf.Max(longestTweenTime, cellDmg * tile.popTime);
 		}
@@ -211,7 +211,7 @@ public class BattleManager : MonoBehaviour
 			var allyTiles = GridManager.instance.GetAllCellsInState(GridManager.CellState.ally);
 			foreach (var tile in allyTiles)
 			{
-				tile.Punch();
+				tile.Punch(true);
 			}
 
 			yield return new WaitForSeconds(0.5f);

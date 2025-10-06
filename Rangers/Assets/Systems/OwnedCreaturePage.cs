@@ -38,10 +38,14 @@ public class OwnedCreaturePage : MonoBehaviour
 	[ReadOnly]
 	public List<CreatureData> CreaturesInExpidition = new List<CreatureData>();
 
+	[ReadOnly]
+	public List<CreatureData> CreaturedFoundThisExpedition = new List<CreatureData>();
+
 	public void ClearOwnedCreatures()
 	{
 		OwnedCreaturesThisRun.Clear();
 		CreaturesInExpidition.Clear();
+		CreaturedFoundThisExpedition.Clear();
 	}
 
 	public void AddCreature(CreatureData capturedCreature, bool instantiate, bool addToLog)
@@ -58,8 +62,12 @@ public class OwnedCreaturePage : MonoBehaviour
 		if (CreaturesInExpidition.Count < 6)
 			CreaturesInExpidition.Add(inst);
 
-		if(addToLog)
+		if (addToLog)
+		{
 			OnFoundCreature(capturedCreature);
+
+			CreaturedFoundThisExpedition.Add(capturedCreature);
+		}
 	}
 
 	/////////////////////////////////////////////////////
