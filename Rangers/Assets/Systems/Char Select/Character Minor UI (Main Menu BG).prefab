@@ -88,7 +88,6 @@ GameObject:
   - component: {fileID: 5493887056847257116}
   - component: {fileID: 486195532398695309}
   - component: {fileID: 9055456595122995132}
-  - component: {fileID: -3381067443394798171}
   m_Layer: 5
   m_Name: Character Minor UI (Main Menu BG)
   m_TagString: Untagged
@@ -209,18 +208,6 @@ MonoBehaviour:
   spinSpeed: -200
   enemyNameTxt: {fileID: 0}
   rectTransform: {fileID: 0}
---- !u!225 &-3381067443394798171
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4745275948946528789}
-  m_Enabled: 1
-  m_Alpha: 0.3
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0
 --- !u!1 &7171790364369894224
 GameObject:
   m_ObjectHideFlags: 0
