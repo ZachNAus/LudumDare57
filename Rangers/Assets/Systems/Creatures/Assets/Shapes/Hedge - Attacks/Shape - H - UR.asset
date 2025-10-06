@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 129d6bd82bcb3c24d8c13ea5035346e7, type: 3}
   m_Name: Shape - H - UR
   m_EditorClassIdentifier: 
-  uniqueID: 
+  attackType: 2
   gridSize: 7
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   gridWrapper:

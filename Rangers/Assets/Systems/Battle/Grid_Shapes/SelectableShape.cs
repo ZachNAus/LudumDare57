@@ -11,7 +11,12 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 	[SerializeField] Image mainImg;
 	[SerializeField] Image borderImg;
 
-	[SerializeField] ColorSettings mainColor;
+	[SerializeField] ColorDict baseColors = new ColorDict();
+
+	[System.Serializable]
+	class ColorDict : SerializableDictionary<AttackRarity, ColorSettings> { }
+
+	//[SerializeField] ColorSettings mainColor;
 	[SerializeField] ColorSettings greyedColor;
 
 	[System.Serializable]
@@ -118,6 +123,8 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 				}
 			}
 		}
+
+		SetColors(true);
 	}
 
 	public void SetInternalShapeScale()
@@ -290,7 +297,7 @@ public class SelectableShape : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
 	public void SetColors(bool normal)
 	{
-		ColorSettings settings = normal ? mainColor : greyedColor;
+		ColorSettings settings = normal ? baseColors[currentShape.attackType] : greyedColor;
 
 		mainImg.color = settings.mainColor;
 		borderImg.color = settings.borderColor;

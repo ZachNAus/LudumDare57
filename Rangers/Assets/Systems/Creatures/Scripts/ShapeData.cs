@@ -5,9 +5,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum AttackRarity
+{
+	Species,
+	GlobalPool,
+	Ultimate
+}
+
 [CreateAssetMenu(menuName = "RANGER/Shape")]
 public class ShapeData : ScriptableObject
 {
+	public AttackRarity attackType;
+
 	[Header("Less important")]
 	[OnValueChanged(nameof(ResizeGrid))]
 	public int gridSize = 8;
