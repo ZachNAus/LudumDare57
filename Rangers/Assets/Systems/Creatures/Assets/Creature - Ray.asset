@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Creature - Ray
   m_EditorClassIdentifier: 
   uniqueId: 
-  creatureName: Ray
+  creatureName: Shredray
   sprite_base: {fileID: 21300000, guid: 6e75eaca2ed3fc046a1bcdf6604a8ac8, type: 3}
   sprite_shiny: {fileID: 21300000, guid: 93f46856e26e829449fd440267f36b76, type: 3}
   allLogs:

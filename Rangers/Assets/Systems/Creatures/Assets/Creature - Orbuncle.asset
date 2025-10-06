@@ -17,7 +17,14 @@ MonoBehaviour:
   sprite_base: {fileID: 21300000, guid: c21ea51fcfa9e5c4aa781dd295484c9f, type: 3}
   sprite_shiny: {fileID: 21300000, guid: dbfb60081ff542445b40289736505913, type: 3}
   allLogs:
-  - NO ONE HAS GIVEN ME LOGS
+  - A very fluffy creature that falls somewhere between fox and dog. An Orbuncle
+    is inseperable from its orb, which it uses levitation magic to carry around.
+  - Orbuncle appears to be adept with arcane magic, likely empowered by its orb.
+    Above its head rests large appendages that aren't quite ears, adorned with gems
+    that seem to further increase its power. Perhaps they are some kind of antennae?
+  - Orbuncle is an extremely docile creature, and a very low-maintenance companion.
+    It is content to lay around, simply staring into its orb. Some suspect that Orbuncle
+    is able to see into the future through its orb, but nobody has proven it yet.
   sizeRangeCM: {x: 60, y: 80}
   healthRange: {x: 25, y: 40}
   healthMaxAlly: 25

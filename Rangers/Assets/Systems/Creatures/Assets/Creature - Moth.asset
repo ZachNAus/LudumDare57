@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Creature - Moth
   m_EditorClassIdentifier: 
   uniqueId: 
-  creatureName: Worble
+  creatureName: Runesect
   sprite_base: {fileID: 21300000, guid: 98f21d86967fa0b4789ef5e9d84b365a, type: 3}
   sprite_shiny: {fileID: 21300000, guid: 5ed3354ce30411b4e976169a5020e4d7, type: 3}
   allLogs:
