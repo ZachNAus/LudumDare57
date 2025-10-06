@@ -175,40 +175,114 @@ public class BattleManager : MonoBehaviour
 				return;
 		}
 
-		//Do damage calculation
-		CurrentEnemyHealth -= GetDamageDealt();
+		StartCoroutine(Co_RunSim());
+	}
+	IEnumerator Co_RunSim()
+	{
+		GameLoading = true;
+
+
+		//Foreach enemy tile, punch
+		var enemyTiles = GridManager.instance.GetAllCellsInState(GridManager.CellState.enemy);
+
+		float longestTweenTime = 0.5f;
+		foreach (var tile in enemyTiles)
+		{
+			//var cellDmg = GetSingleTileDamage(tile);
+			//tile.PunchMultiple(Mathf.RoundToInt(cellDmg));
+			tile.Punch();
+
+			//longestTweenTime = Mathf.Max(longestTweenTime, cellDmg * tile.popTime);
+		}
+
+		yield return new WaitForSeconds(longestTweenTime);
+
 
 		CurrentAllyHealth -= CalculateDamageTaken();
 
+		allyCurrentHealth.SetText(CurrentAllyHealth.ToString());
 
-		GameLoading = true;
-		UpdateHealthBars(false, () => 
+		yield return allyHealthBar.DOFillAmount(CurrentAllyHealth / SelectedAllies.Sum(x => x.allyData.healthMaxAlly), 0.5f).WaitForCompletion();
+		
+
+		if (CurrentAllyHealth > 0)
 		{
-			GameLoading = false;
+			//Foreach ally tile, punch
+			var allyTiles = GridManager.instance.GetAllCellsInState(GridManager.CellState.ally);
+			foreach (var tile in allyTiles)
+			{
+				tile.Punch();
+			}
 
-			if (CurrentAllyHealth > 0 && CurrentEnemyHealth > 0)
-				EnemyTurn();
+			yield return new WaitForSeconds(0.5f);
+
+			//Do damage calculation
+			CurrentEnemyHealth -= GetDamageDealt();
+			enemyCurrentHealth.SetText(CurrentEnemyHealth.ToString());
+
+			yield return enemyHealthBar.DOFillAmount(CurrentEnemyHealth / CurrentEnemy.healthMaxEnemy, 0.5f).WaitForCompletion();
+		}
+
+
+		if (CurrentAllyHealth > 0 && CurrentEnemyHealth > 0)
+			EnemyTurn();
+		else
+		{
+			if (CurrentAllyHealth <= 0)
+			{
+				//YOU LOSE
+				GameManager.instance.OnLoseBattle();
+			}
 			else
 			{
-				if (CurrentAllyHealth <= 0)
-				{
-					//YOU LOSE
-					GameManager.instance.OnLoseBattle();
-				}
-				else
-				{
-					//YOU WIN
-					GameManager.instance.OnWinBattle();
-				}
+				//YOU WIN
+				GameManager.instance.OnWinBattle();
 			}
-		});
+		}
+
+		GameLoading = false;
 	}
+
 
 	public static bool GameLoading;
 
 	float GetDamageDealt()
 	{
 		return GridManager.instance.GetAllCellsInState(GridManager.CellState.ally).Count;
+	}
+
+	public float GetSingleTileDamage(CellFX cell)
+	{
+		int adjacentCount = 0;
+
+		// Check all 4 adjacent directions (up, down, left, right)
+		Vector2Int[] directions = new Vector2Int[]
+		{
+			new Vector2Int(0, 1),   // up
+			new Vector2Int(0, -1),  // down
+			new Vector2Int(-1, 0),  // left
+			new Vector2Int(1, 0)    // right
+		};
+
+		int alliesAdjacent = 0;
+		foreach (var dir in directions)
+		{
+			Vector2Int adjacentPos = cell.GridCoordinate + dir;
+
+			// Check if the adjacent cell is also an enemy cell
+			if (GridManager.instance.GetCellState(adjacentPos) == GridManager.CellState.enemy)
+			{
+				adjacentCount++;
+			}
+
+			if (adjacentAlliesReduceDmg && GridManager.instance.GetCellState(adjacentPos) == GridManager.CellState.ally)
+			{
+				alliesAdjacent++;
+			}
+		}
+
+		// Deal 1 damage base, plus 1 for each adjacent cell
+		return Mathf.Max(1 + adjacentCount - alliesAdjacent, 1);
 	}
 
 	float CalculateDamageTaken()
@@ -219,43 +293,7 @@ public class BattleManager : MonoBehaviour
 
 		foreach (var cell in cells)
 		{
-			int adjacentCount = 0;
-
-			// Check all 4 adjacent directions (up, down, left, right)
-			Vector2Int[] directions = new Vector2Int[]
-			{
-				new Vector2Int(0, 1),   // up
-                new Vector2Int(0, -1),  // down
-                new Vector2Int(-1, 0),  // left
-                new Vector2Int(1, 0)    // right
-            };
-
-			int alliesAdjacent = 0;
-			foreach (var dir in directions)
-			{
-				Vector2Int adjacentPos = cell.GridCoordinate + dir;
-
-				// Check if the adjacent cell is also an enemy cell
-				if (GridManager.instance.GetCellState(adjacentPos) == GridManager.CellState.enemy)
-				{
-					adjacentCount++;
-				}
-
-				if (adjacentAlliesReduceDmg && GridManager.instance.GetCellState(adjacentPos) == GridManager.CellState.ally)
-				{
-					alliesAdjacent++;
-				}
-			}
-
-			// Deal 1 damage base, plus 1 for each adjacent cell
-			if (adjacentCount > 0)
-			{
-				totalDamage += Mathf.Max(1 + adjacentCount - alliesAdjacent, 1);
-			}
-			else
-			{
-				totalDamage += 1;
-			}
+			totalDamage += GetSingleTileDamage(cell);
 		}
 
 		return totalDamage;
@@ -305,7 +343,7 @@ public class BattleManager : MonoBehaviour
 
 	IEnumerator Co_waitTxt(int framesToWait = 1)
 	{
-		for(int i = 0; i < framesToWait; i++)
+		for (int i = 0; i < framesToWait; i++)
 			yield return null;
 
 		var allyCount = SelectedAllies.Count;
@@ -348,39 +386,9 @@ public class BattleManager : MonoBehaviour
 		}
 
 		// Calculate and display damage for each enemy cell
-
 		foreach (var cell in enemyCells)
 		{
-			int adjacentCount = 0;
-			int alliesAdjacent = 0;
-
-			// Check all 4 adjacent directions (up, down, left, right)
-			Vector2Int[] directions = new Vector2Int[]
-			{
-				new Vector2Int(0, 1),   // up
-				new Vector2Int(0, -1),  // down
-				new Vector2Int(-1, 0),  // left
-				new Vector2Int(1, 0)    // right
-			};
-
-			foreach (var dir in directions)
-			{
-				Vector2Int adjacentPos = cell.GridCoordinate + dir;
-
-				// Check if the adjacent cell is also an enemy cell
-				if (GridManager.instance.GetCellState(adjacentPos) == GridManager.CellState.enemy)
-				{
-					adjacentCount++;
-				}
-
-				if (adjacentAlliesReduceDmg && GridManager.instance.GetCellState(adjacentPos) == GridManager.CellState.ally)
-				{
-					alliesAdjacent++;
-				}
-			}
-
-			// Calculate damage: 1 base + adjacentCount
-			int damage = Mathf.Max(1 + adjacentCount - alliesAdjacent, 1);
+			int damage = (int)GetSingleTileDamage(cell);
 
 			if (damage > 0)
 			{
@@ -396,6 +404,6 @@ public class BattleManager : MonoBehaviour
 
 	private void Update()
 	{
-		enemySprite.color = new Color(1,1,1, SelectableShape.DraggingAny ? 0.3f : 1);
+		enemySprite.color = new Color(1, 1, 1, SelectableShape.DraggingAny ? 0.3f : 1);
 	}
 }
