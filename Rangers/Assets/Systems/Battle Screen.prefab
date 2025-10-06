@@ -299,6 +299,10 @@ MonoBehaviour:
   allyCurrentHealth: {fileID: 1913386009929348255}
   enemyCurrentHealth: {fileID: 4985345930884887565}
   dmgNumbersToggleBtn: {fileID: 788661966024464015}
+  healthTxtSizeTween: 0.1
+  healthTxtDuration: 0.5
+  healthTxtVibrato: 8
+  healthTxtElasticity: 1
   adjacentAlliesReduceDmg: 1
   showDamageNumbers: 0
 --- !u!1 &1739128328965255493
@@ -501,9 +505,9 @@ RectTransform:
   m_Children:
   - {fileID: 3117145199914435137}
   - {fileID: 7444145025309051218}
+  - {fileID: 9184401308368720111}
   - {fileID: 2955337911058127233}
   - {fileID: 5410961331574491188}
-  - {fileID: 9184401308368720111}
   m_Father: {fileID: 6287697871494957324}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
@@ -1038,9 +1042,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 405, y: 0}
+  m_AnchoredPosition: {x: 437.6361, y: 0.000030517578}
   m_SizeDelta: {x: 65.2721, y: 50}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9087026142355548088
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1172,7 +1176,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 50, y: 0}
+  m_AnchoredPosition: {x: 50, y: 0.000030517578}
   m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &1993603483534118292
@@ -1306,9 +1310,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -350, y: 0}
+  m_AnchoredPosition: {x: -50, y: 0.000030517578}
   m_SizeDelta: {x: 300, y: 50}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &5277944285300497154
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2162,9 +2166,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -470, y: 0}
+  m_AnchoredPosition: {x: -437.3639, y: 0.000030517578}
   m_SizeDelta: {x: 65.272095, y: 50}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2138698916425135743
 CanvasRenderer:
   m_ObjectHideFlags: 0
