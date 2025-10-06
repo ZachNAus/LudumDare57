@@ -14,6 +14,10 @@ public class CharacterMinorUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
 	[SerializeField] bool canHover;
 
+	[SerializeField] Transform toSpin;
+	public bool Spin;
+	[SerializeField] float spinSpeed;
+
 	[Header("Optional")]
 	[SerializeField] TextMeshProUGUI enemyNameTxt;
 
@@ -86,5 +90,13 @@ public class CharacterMinorUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
 		transform.DOKill();
 		transform.localScale = Vector3.one;
 		transform.DOPunchScale(Vector3.one * 0.5f, 0.5f, 5, 3);
+	}
+
+	private void Update()
+	{
+		if (Spin)
+		{
+			toSpin.Rotate(new Vector3(0,0,spinSpeed * Time.deltaTime));
+		}
 	}
 }

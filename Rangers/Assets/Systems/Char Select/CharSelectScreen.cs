@@ -12,11 +12,14 @@ public class CharSelectScreen : MonoBehaviour
 
 	[SerializeField] CharacterMinorUI enemyPreview;
 
-	[Header("ally stuff")]
 
 	List<CreatureData> selectedAllies = new List<CreatureData>();
+
+
+	[Header("ally stuff")]
 	[SerializeField] Transform selectableAllyHolder;
 	[SerializeField] CharacterMinorUI selectableAllyPrefab;
+	List<CharacterMinorUI> activeSelectableUIObjects = new List<CharacterMinorUI>();
 
 	[Space]
 
@@ -32,7 +35,7 @@ public class CharSelectScreen : MonoBehaviour
 		deployBtn.onClick.AddListener(TryStartCombat);
 		deployTxt = deployBtn.GetComponentInChildren<TextMeshProUGUI>();
 
-		foreach(var e in equippedInfoStuff)
+		foreach (var e in equippedInfoStuff)
 		{
 			e.OnPressChar += TryUnequip;
 		}
@@ -46,8 +49,9 @@ public class CharSelectScreen : MonoBehaviour
 		enemyPreview.SetCreature(GameManager.instance.CurrentEnemy);
 
 		selectableAllyHolder.DestroyAllChildren();
+		activeSelectableUIObjects.Clear();
 
-		for(int i = 0; i < 6; i++)
+		for (int i = 0; i < 6; i++)
 		{
 			var inst = Instantiate(selectableAllyPrefab, selectableAllyHolder);
 
@@ -56,6 +60,7 @@ public class CharSelectScreen : MonoBehaviour
 				var ally = OwnedCreaturePage.instance.CreaturesInExpidition[i];
 
 				inst.Setup(ally, TryEquip);
+				activeSelectableUIObjects.Add(inst);
 			}
 			else
 			{
@@ -80,6 +85,7 @@ public class CharSelectScreen : MonoBehaviour
 			return;
 
 		ui.Punch();
+		ui.Spin = true;
 
 		selectedAllies.Add(creature);
 
@@ -95,6 +101,8 @@ public class CharSelectScreen : MonoBehaviour
 
 		info.Punch();
 
+		activeSelectableUIObjects.First(x => x.Creature.uniqueId == creature.uniqueId).Spin = false;
+
 		UpdateUI();
 	}
 
@@ -103,9 +111,9 @@ public class CharSelectScreen : MonoBehaviour
 		UpdateHealth();
 		UpdateText();
 
-		for(int i = 0; i < equippedInfoStuff.Count; i++)
+		for (int i = 0; i < equippedInfoStuff.Count; i++)
 		{
-			if(selectedAllies.Count <= i)
+			if (selectedAllies.Count <= i)
 			{
 				equippedInfoStuff[i].Setup(null);
 			}
@@ -126,5 +134,5 @@ public class CharSelectScreen : MonoBehaviour
 		healthTxt.SetText(selectedAllies.Sum(x => x.healthMaxAlly).ToString());
 	}
 
-	
+
 }
