@@ -62,6 +62,12 @@ public class BattleManager : MonoBehaviour
 
 	[SerializeField] Button dmgNumbersToggleBtn;
 
+	[Header("Tween settings")]
+	[SerializeField] float healthTxtSizeTween;
+	[SerializeField] float healthTxtDuration;
+	[SerializeField] int healthTxtVibrato;
+	[SerializeField] float healthTxtElasticity;
+
 	[Header("Extra Combat settings")]
 	[SerializeField] bool adjacentAlliesReduceDmg;
 
@@ -283,7 +289,14 @@ public class BattleManager : MonoBehaviour
 	public void OnBoardUpdated()
 	{
 		allyDamagePrediction.SetText(GetDamageDealt().ToString());
+		allyDamagePrediction.DOKill();
+		allyDamagePrediction.transform.localScale = Vector3.one;
+		allyDamagePrediction.transform.DOPunchScale(Vector3.one * healthTxtElasticity, healthTxtDuration, healthTxtVibrato, healthTxtElasticity);
+
 		enemyDamagePrediction.SetText(CalculateDamageTaken().ToString());
+		enemyDamagePrediction.DOKill();
+		enemyDamagePrediction.transform.localScale = Vector3.one;
+		enemyDamagePrediction.transform.DOPunchScale(Vector3.one * healthTxtElasticity, healthTxtDuration, healthTxtVibrato, healthTxtElasticity);
 
 		StartCoroutine(Co_waitTxt());
 
