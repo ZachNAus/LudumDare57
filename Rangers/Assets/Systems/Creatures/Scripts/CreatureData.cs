@@ -96,7 +96,16 @@ public class CreatureData : ScriptableObject
 		if (currentShapePool.Count == 0)
 			FillPool(isEnemy);
 
-		var shape = currentShapePool.GetRandom();
+		ShapeData shape = null;
+		if(isEnemy && OwnedCreaturePage.instance.OwnedCreaturesThisRun.Count == 1)
+		{
+			shape = currentShapePool[0];
+		}
+		else
+		{
+			shape = currentShapePool.GetRandom();
+		}
+
 
 		if (currentShapePool.Count == 0)
 			FillPool(isEnemy);
