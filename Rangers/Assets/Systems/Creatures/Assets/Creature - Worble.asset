@@ -19,16 +19,16 @@ MonoBehaviour:
   allLogs:
   - NO ONE HAS GIVEN ME LOGS
   sizeRangeCM: {x: 5, y: 15}
-  healthRange: {x: 25, y: 45}
+  healthRange: {x: 35, y: 45}
   healthMaxAlly: 45
-  healthMaxEnemy: 110
+  healthMaxEnemy: 75
   enemyShapePool:
-  - {fileID: 11400000, guid: bf72127e1c9a6c64a90960b4403b2d56, type: 2}
-  - {fileID: 11400000, guid: 80c3bf23586db5c47b77a8cf2cd38edb, type: 2}
-  - {fileID: 11400000, guid: 9af1e5db357ef5e4b9129acbd55ca399, type: 2}
+  - {fileID: 11400000, guid: 49348f71ccea9d84eb5bd1875af207a3, type: 2}
+  - {fileID: 11400000, guid: c2bb56371b8b3604a9d5db48cb361151, type: 2}
+  - {fileID: 11400000, guid: e9e3cda7fe7efd14d92f29e9d00328ea, type: 2}
   allyShapePool:
-  - {fileID: 11400000, guid: 6d9075196d2c54d44bf46f1584b6f9e4, type: 2}
-  - {fileID: 11400000, guid: a2b2dab3a7a42d24b836dde4c7e5b047, type: 2}
-  - {fileID: 11400000, guid: bf8c3adac681eaf4daca20527e79f4d5, type: 2}
-  - {fileID: 11400000, guid: f74b66ed8a20a14419bbc6ae37b94983, type: 2}
+  - {fileID: 11400000, guid: 368a0ed17dd308343988160e6bdd8e3b, type: 2}
+  - {fileID: 11400000, guid: 709dee27df85c934dabc94f2bd0ed8ef, type: 2}
+  - {fileID: 11400000, guid: 06cb4deb9cc01a246a2d314429bf8b46, type: 2}
+  - {fileID: 11400000, guid: 630b23745a56d5c4794b00a50f55009e, type: 2}
   currentShapePool: []
