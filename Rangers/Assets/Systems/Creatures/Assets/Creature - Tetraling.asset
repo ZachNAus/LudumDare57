@@ -20,12 +20,12 @@ MonoBehaviour:
   healthMaxAlly: 45
   healthMaxEnemy: 110
   enemyShapePool:
-  - {fileID: 11400000, guid: 76421260c1b765e40a093620c7cd7bb1, type: 2}
-  - {fileID: 11400000, guid: 15fd62636bed9c94e8acb121a8276e79, type: 2}
-  - {fileID: 11400000, guid: 40b1080b559597c43845b106f4e5498e, type: 2}
+  - {fileID: 11400000, guid: 279e490f429531847ae39be87148acd8, type: 2}
+  - {fileID: 11400000, guid: 29bedcec7754cc84d9149b9348374c0a, type: 2}
+  - {fileID: 11400000, guid: e950477d7896898488d052f9d72d57f5, type: 2}
   allyShapePool:
-  - {fileID: 11400000, guid: 21a9b670770909848a82e86217eaa473, type: 2}
-  - {fileID: 11400000, guid: a3321067e6c348e4bb3a5d0ba3996b9c, type: 2}
-  - {fileID: 11400000, guid: 130cf2cc491a12148a417edc229bf6f0, type: 2}
-  - {fileID: 11400000, guid: c5e9fb9bc8110ae49b24b740f43993e4, type: 2}
+  - {fileID: 11400000, guid: 3af1afc9546124c4d8a4bf2e7d38ee78, type: 2}
+  - {fileID: 11400000, guid: 9903edbed189c2649bbec1d3d49184f0, type: 2}
+  - {fileID: 11400000, guid: ae5dd02a7c4a39248b090262a987a302, type: 2}
+  - {fileID: 11400000, guid: eadb6679822869c4a929e33898b0a41c, type: 2}
   currentShapePool: []
