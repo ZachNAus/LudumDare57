@@ -1413,6 +1413,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 997142613}
+    - target: {fileID: 6716467914331859963, guid: 2cd1b3c52180dda4e981a098f5d5b864, type: 3}
+      propertyPath: scrollSpeedY
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 6716467914331859963, guid: 2cd1b3c52180dda4e981a098f5d5b864, type: 3}
+      propertyPath: startingYOffset
+      value: 900
+      objectReference: {fileID: 0}
     - target: {fileID: 7285207628520154883, guid: 2cd1b3c52180dda4e981a098f5d5b864, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
