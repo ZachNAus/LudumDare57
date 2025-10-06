@@ -237,7 +237,7 @@ public class GridManager : MonoBehaviour
 		{
 			if (cells.TryGetValue(coord, out CellFX cell) && cell != null)
 			{
-				cell.Punch();
+				cell.Punch(false);
 			}
 		}
 	}
@@ -552,7 +552,7 @@ public class GridManager : MonoBehaviour
 		{
 			if (cells.TryGetValue(coord, out CellFX cell) && cell != null)
 			{
-				cell.Punch();
+				cell.Punch(false);
 			}
 		}
 	}
