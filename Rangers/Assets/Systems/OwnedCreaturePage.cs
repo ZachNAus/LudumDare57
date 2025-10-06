@@ -18,12 +18,12 @@ public class OwnedCreaturePage : MonoBehaviour
 
 	public bool HasFoundCreature(CreatureData creatureName)
 	{
-		return PlayerPrefs.GetInt(creatureName.creatureName, 0) == 1;
+		return PlayerPrefs.GetInt(creatureName.creatureName, 0) > 0;
 	}
 
 	public void OnFoundCreature(CreatureData creatureName)
 	{
-		PlayerPrefs.SetInt(creatureName.creatureName, 1);
+		PlayerPrefs.SetInt(creatureName.creatureName, PlayerPrefs.GetInt(creatureName.creatureName, 0) + 1);
 	}
 
 	////////////////////////////////////////////////
@@ -39,9 +39,9 @@ public class OwnedCreaturePage : MonoBehaviour
 		CreaturesInExpidition.Clear();
 	}
 
-	public void AddCreature(CreatureData capturedCreature)
+	public void AddCreature(CreatureData capturedCreature, bool instantiate)
 	{
-		var inst = Instantiate(capturedCreature);
+		var inst = instantiate ? Instantiate(capturedCreature) : capturedCreature;
 
 		inst.FirstTimeSetup();
 
@@ -52,8 +52,10 @@ public class OwnedCreaturePage : MonoBehaviour
 		if (CreaturesInExpidition.Count < 6)
 			CreaturesInExpidition.Add(inst);
 
-
 		OnFoundCreature(capturedCreature);
 	}
 
+	/////////////////////////////////////////////////////
+
+	public List<ShapeData> globalShapePool; 
 }

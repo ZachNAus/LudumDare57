@@ -15,7 +15,7 @@ public class CellFX : MonoBehaviour
 
     [Space]
     [SerializeField] float popScale = 1.1f;
-    [SerializeField] float popTime = 1;
+    public float popTime = 1;
     [SerializeField] int popvibrato = 10;
     [SerializeField] float popelasticity = 1;
 
@@ -50,12 +50,19 @@ public class CellFX : MonoBehaviour
 	}
 
     [Button("Pop")]
-    public void PopLine()
+    public void Punch()
 	{
         transform.DOKill();
         transform.localScale = Vector3.one;
         transform.DOPunchScale(Vector3.one * popScale, popTime, popvibrato, popelasticity);
 	}
+
+    public void PunchMultiple(int times)
+	{
+        transform.DOKill();
+        transform.localScale = Vector3.one;
+        transform.DOPunchScale(Vector3.one * popScale, popTime, popvibrato, popelasticity).SetLoops(times, LoopType.Restart);
+    }
 
     public void SetDmgShowActive(bool val)
 	{
