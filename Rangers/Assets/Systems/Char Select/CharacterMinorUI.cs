@@ -102,4 +102,9 @@ public class CharacterMinorUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
 			toSpin.Rotate(new Vector3(0,0,spinSpeed * Time.deltaTime));
 		}
 	}
+
+	public void UpdateSpriteColor()
+	{
+		charSprite.color = OwnedCreaturePage.instance.HasFoundCreature(Creature) ? Color.white : Color.black;
+	}
 }

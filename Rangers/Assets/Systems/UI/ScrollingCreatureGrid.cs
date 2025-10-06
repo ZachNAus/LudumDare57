@@ -31,6 +31,7 @@ public class ScrollingCreatureGrid : MonoBehaviour
 
     private RectTransform rectTransform;
     private List<CharacterMinorUI> gridCells = new List<CharacterMinorUI>();
+    private List<Vector2> cellWrapOffsets = new List<Vector2>();
     private Vector2 scrollOffset;
     private int gridWidth;
     private int gridHeight;
@@ -94,9 +95,11 @@ public class ScrollingCreatureGrid : MonoBehaviour
         {
             CreatureData randomCreature = OwnedCreaturePage.instance.allCreatures.GetRandom();
             cell.Setup(randomCreature, null);
+            cell.UpdateSpriteColor();
         }
 
         gridCells.Add(cell);
+        cellWrapOffsets.Add(Vector2.zero);
     }
 
     private void Update()
@@ -120,24 +123,23 @@ public class ScrollingCreatureGrid : MonoBehaviour
             int x = i % gridWidth;
             int y = i / gridWidth;
 
-            // Calculate base position from top (with offset)
+            // Calculate base position from top (with offset and wrap offset)
             Vector2 basePos = new Vector2(x * cellSize, topY - (y * cellSize));
-            cellRect.anchoredPosition = basePos - scrollOffset;
+            cellRect.anchoredPosition = basePos + cellWrapOffsets[i] - scrollOffset;
 
             Vector2 pos = cellRect.anchoredPosition;
 
             // Wrap horizontally
             if (pos.x < -cellSize)
-                cellRect.anchoredPosition = new Vector2(pos.x + (gridWidth * cellSize), pos.y);
+                cellWrapOffsets[i] += new Vector2(gridWidth * cellSize, 0);
             else if (pos.x > rect.width + cellSize)
-                cellRect.anchoredPosition = new Vector2(pos.x - (gridWidth * cellSize), pos.y);
+                cellWrapOffsets[i] += new Vector2(-gridWidth * cellSize, 0);
 
             // Wrap vertically - when cell goes below bottom, teleport to top
-            pos = cellRect.anchoredPosition;
             if (pos.y < bottomY - cellSize)
-                cellRect.anchoredPosition = new Vector2(pos.x, pos.y + (gridHeight * cellSize));
+                cellWrapOffsets[i] += new Vector2(0, gridHeight * cellSize);
             else if (pos.y > topY + cellSize)
-                cellRect.anchoredPosition = new Vector2(pos.x, pos.y - (gridHeight * cellSize));
+                cellWrapOffsets[i] += new Vector2(0, -gridHeight * cellSize);
         }
     }
 }

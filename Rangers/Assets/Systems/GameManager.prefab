@@ -57,6 +57,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2b09a920734869443970c6d099027f98, type: 2}
   - {fileID: 11400000, guid: d32aff12782ae8e4e9a353e449c753f1, type: 2}
   CombatsDoneThisExpdition: 0
+  CombatsInExpedition: 0
 --- !u!114 &5397129488165258012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,6 +77,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6bc4f3451c975ea4faac2ae46b24aacf, type: 2}
   - {fileID: 11400000, guid: 188600dc019fc4b458930c5173bb7aed, type: 2}
   - {fileID: 11400000, guid: 3fe9974da055d8b4881b62a339310608, type: 2}
+  - {fileID: 11400000, guid: f3db277cf16d4b345988a5170cff2c63, type: 2}
   OwnedCreaturesThisRun: []
   CreaturesInExpidition: []
   CreaturedFoundThisExpedition: []

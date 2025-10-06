@@ -75,6 +75,7 @@ GameObject:
   - component: {fileID: 7864223272917476065}
   - component: {fileID: 2823333866872100317}
   - component: {fileID: 1063474007550955754}
+  - component: {fileID: 2237445382388870991}
   m_Layer: 5
   m_Name: New Game
   m_TagString: Untagged
@@ -197,6 +198,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2237445382388870991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373931185162844148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ddea5dd41bda5942b455390a4589790, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &763706858752694358
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,6 +710,7 @@ GameObject:
   - component: {fileID: 6167489638215374447}
   - component: {fileID: 4666791150460687908}
   - component: {fileID: 3694131358024241484}
+  - component: {fileID: 146694860156555804}
   m_Layer: 5
   m_Name: Tutorial
   m_TagString: Untagged
@@ -819,6 +833,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &146694860156555804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5477124647373520557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ddea5dd41bda5942b455390a4589790, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6122199313912041831
 GameObject:
   m_ObjectHideFlags: 0
@@ -1170,7 +1196,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: RANGERS
+  m_text: Rune Rangers
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 879cb16c7e8bb814186cb9e9fb0260d1, type: 2}
   m_sharedMaterial: {fileID: -1942256700666351592, guid: 879cb16c7e8bb814186cb9e9fb0260d1, type: 2}
@@ -1537,6 +1563,7 @@ GameObject:
   - component: {fileID: 8157840411076294550}
   - component: {fileID: 839884026574332058}
   - component: {fileID: 4777601518925875036}
+  - component: {fileID: 4755252158413326787}
   m_Layer: 5
   m_Name: Quit
   m_TagString: Untagged
@@ -1659,6 +1686,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4755252158413326787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8415298380449127788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ddea5dd41bda5942b455390a4589790, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8929694482210227276
 GameObject:
   m_ObjectHideFlags: 0

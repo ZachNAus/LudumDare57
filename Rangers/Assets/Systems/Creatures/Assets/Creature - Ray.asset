@@ -18,7 +18,7 @@ MonoBehaviour:
   sprite_shiny: {fileID: 21300000, guid: 93f46856e26e829449fd440267f36b76, type: 3}
   allLogs:
   - NO ONE HAS GIVEN ME LOGS
-  sizeRangeCM: {x: 24, y: 56}
+  sizeRangeCM: {x: 150, y: 200}
   healthRange: {x: 15, y: 30}
   healthMaxAlly: 20
   healthMaxEnemy: 50

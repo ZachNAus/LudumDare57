@@ -86,6 +86,8 @@ public class ExpiditionSelectScreen : MonoBehaviour
 			return;
 		}
 
+		SoundManager.instance.PlaySoundEffect(AudioType.AddToTeam);
+
 		OwnedCreaturePage.instance.CreaturesInExpidition.Add(creature);
 
 		ui.Punch();
@@ -110,6 +112,8 @@ public class ExpiditionSelectScreen : MonoBehaviour
 		//If equipped, unequip
 		if (OwnedCreaturePage.instance.CreaturesInExpidition.Contains(creature))
 		{
+			SoundManager.instance.PlaySoundEffect(AudioType.RemoveFromTeam);
+
 			ui.SetCreature(null);
 			ui.Punch();
 			ui.Spin = false;
