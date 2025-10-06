@@ -78,6 +78,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 188600dc019fc4b458930c5173bb7aed, type: 2}
   - {fileID: 11400000, guid: 3fe9974da055d8b4881b62a339310608, type: 2}
   - {fileID: 11400000, guid: f3db277cf16d4b345988a5170cff2c63, type: 2}
+  - {fileID: 11400000, guid: 9c5bde377a4a44745908b3a9a0acc054, type: 2}
   OwnedCreaturesThisRun: []
   CreaturesInExpidition: []
   CreaturedFoundThisExpedition: []
