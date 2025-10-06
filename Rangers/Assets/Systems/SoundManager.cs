@@ -27,8 +27,9 @@ public enum AudioType
 
 public class SoundManager : MonoBehaviour
 {
-    [SerializeField] AudioSource musicSource;
-    [SerializeField] AudioSource sfxSource;
+	[SerializeField] AudioSource musicSourceBattle;
+	[SerializeField] AudioSource musicSourceNonBattle;
+	[SerializeField] AudioSource sfxSource;
 
 	[Header("Audio")]
 	[SerializeField] AudioClip[] nonBattleMusic;
@@ -51,29 +52,77 @@ public class SoundManager : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
-		SwapMusic(false);
-		PlayMusic();
+		musicSourceNonBattle.clip = nonBattleMusic.GetRandom();
+		musicSourceNonBattle.Play();
+
+		musicSourceBattle.Stop();
 	}
 
 	public void SwapMusic(bool battleMusic)
 	{
-		musicSource.clip = battleMusic ? BattleMusic.GetRandom() : nonBattleMusic.GetRandom();
-		musicSource.Play();
+		var fadeIn = battleMusic ? musicSourceBattle : musicSourceNonBattle;
+		var fadeOut = !battleMusic ? musicSourceBattle : musicSourceNonBattle;
+
+		fadeOut.DOKill();
+		fadeOut.DOFade(0, 0.5f).OnComplete(() => fadeOut.Stop());
+
+		fadeIn.DOKill();
+		fadeIn.clip = battleMusic ? BattleMusic.GetRandom() : nonBattleMusic.GetRandom();
+		fadeIn.Play();
+		fadeIn.DOFade(1, 0.5f);
 	}
-    public void PauseMusic()
+	public void FadeOutBothMusic()
 	{
-		musicSource.DOFade(0, 0.5f);
+		musicSourceBattle.DOKill();
+		musicSourceBattle.DOFade(0, 0.5f);
+
+		musicSourceNonBattle.DOKill();
+		musicSourceNonBattle.DOFade(0, 0.5f);
 	}
-	public void PlayMusic()
+	public void FadeInMusic(bool battleMusic, float delay)
 	{
-		musicSource.Play();
-		musicSource.DOFade(1, 0.5f);
+		var fadeIn = battleMusic ? musicSourceBattle : musicSourceNonBattle;
+
+		fadeIn.DOKill();
+		fadeIn.clip = battleMusic ? BattleMusic.GetRandom() : nonBattleMusic.GetRandom();
+		fadeIn.Play();
+		fadeIn.DOFade(1, 0.5f).SetDelay(delay);
+	}
+
+	public void PauseMusic(float pauseDuration, System.Action midPause, System.Action endPaude)
+	{
+		StartCoroutine(Co_PauseMusic(pauseDuration, midPause, endPaude));
+	}
+	IEnumerator Co_PauseMusic(float pauseDuration, System.Action midPause, System.Action endPaude)
+	{
+		musicSourceBattle.DOFade(0, 0.5f);
+		musicSourceNonBattle.DOFade(0, 0.5f);
+
+		yield return new WaitForSeconds(0.5f);
+
+		midPause?.Invoke();
+
+		yield return new WaitForSeconds(pauseDuration);
+
+		musicSourceBattle.DOFade(0, 0.5f);
+		musicSourceNonBattle.DOFade(0, 0.5f);
+
+		yield return new WaitForSeconds(0.5f);
+
+		endPaude?.Invoke();
 	}
 
 	public void PlaySoundEffect(AudioType t)
 	{
-		var clip = soundEffects[t].clips.GetRandom();
+		if (soundEffects.ContainsKey(t) && soundEffects[t].clips.Length > 0)
+		{
+			var clip = soundEffects[t].clips.GetRandom();
 
-		sfxSource.PlayOneShot(clip);
+			sfxSource.PlayOneShot(clip);
+		}
+		else
+		{
+			Debug.LogError("DGVFISBNJNKJDGREWSKLNDGSV NB POEFJW WE GOT NO AUDIO LKNSGED:JBNGFRS:NFES:O");
+		}
 	}
 }

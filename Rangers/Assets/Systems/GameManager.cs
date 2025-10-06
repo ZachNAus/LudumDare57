@@ -100,7 +100,8 @@ public class GameManager : MonoBehaviour
 
 	public void OnLoseBattle()
 	{
-		SoundManager.instance.SwapMusic(false);
+		SoundManager.instance.FadeOutBothMusic();
+		SoundManager.instance.FadeInMusic(false, 2);
 
 		SoundManager.instance.PlaySoundEffect(AudioType.LoseEncounter);
 
@@ -111,7 +112,8 @@ public class GameManager : MonoBehaviour
 
 	public void OnWinBattle()
 	{
-		SoundManager.instance.SwapMusic(false);
+		SoundManager.instance.FadeOutBothMusic();
+		SoundManager.instance.FadeInMusic(false, 2);
 
 		SoundManager.instance.PlaySoundEffect(AudioType.WinEncounter);
 
