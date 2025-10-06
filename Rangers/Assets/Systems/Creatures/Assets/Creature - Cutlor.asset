@@ -15,7 +15,8 @@ MonoBehaviour:
   uniqueId: 
   creatureName: Cutlor
   sprite: {fileID: 21300000, guid: a98f13ec342d8434a8d549a682b75612, type: 3}
-  desc: It's Cutlor
+  allLogs:
+  - NO ONE HAS GIVEN ME LOGS
   sizeRangeCM: {x: 24, y: 56}
   healthMaxAlly: 40
   healthMaxEnemy: 100

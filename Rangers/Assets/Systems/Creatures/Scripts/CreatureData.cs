@@ -17,8 +17,7 @@ public class CreatureData : ScriptableObject
 
 	public Sprite sprite;
 
-	[TextArea(3, 10)]
-	public string desc;
+	public string[] allLogs;
 
 	[SerializeField] Vector2 sizeRangeCM = new Vector2(24, 56);
 	public int CreatureSize { get; private set; }
@@ -44,20 +43,27 @@ public class CreatureData : ScriptableObject
 	[Tooltip("What attacks they have left")]
 	public List<ShapeData> currentShapePool = new List<ShapeData>();
 
-	public string GetFullDescription()
+	public string GetMostRecentLog()
 	{
-		StringBuilder sb = new StringBuilder();
+		//StringBuilder sb = new StringBuilder();
+		//
+		//sb.Append($"Size : {CreatureSize}cm\n");
+		//
+		//string gender = IsBoy ? "Male" : "Female";
+		//sb.Append($"Gender : {gender}\n");
+		//
+		//sb.Append($"Health : {healthMaxAlly}\n\n");
+		//
+		//sb.Append(desc);
+		//
+		//return sb.ToString();
 
-		sb.Append($"Size : {CreatureSize}cm\n");
+		var logNumber = OwnedCreaturePage.instance.CreaturesFound(this) - 1;
 
-		string gender = IsBoy ? "Male" : "Female";
-		sb.Append($"Gender : {gender}\n");
-
-		sb.Append($"Health : {healthMaxAlly}\n\n");
-
-		sb.Append(desc);
-
-		return sb.ToString();
+		if (logNumber >= allLogs.Length)
+			return "You have learnt everything about this creature.";
+		else
+			return allLogs[logNumber];
 	}
 
 	public ShapeData GetRandomAttack(bool isEnemy)

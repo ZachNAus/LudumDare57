@@ -6,8 +6,8 @@ using UnityEngine.UI;
 
 public class VictoryScreen : MonoBehaviour
 {
-	[SerializeField] Image charSprite;
-	[SerializeField] TextMeshProUGUI charName;
+	[SerializeField] CharacterMinorUI creature;
+	[SerializeField] TextMeshProUGUI charhealth;
 	[SerializeField] TextMeshProUGUI charDesc;
 
 	[Space]
@@ -19,10 +19,10 @@ public class VictoryScreen : MonoBehaviour
 	{
 		var c = GameManager.instance.CurrentEnemy;
 
-		charSprite.sprite = c.sprite;
+		creature.Setup(c, null);
+		charDesc.SetText(c.GetMostRecentLog());
 
-		charName.SetText(c.creatureName);
-		charDesc.SetText(c.GetFullDescription());
+		charhealth.SetText($"HP: {c.healthMaxAlly}");
 
 		attackHolder.DestroyAllChildren();
 
