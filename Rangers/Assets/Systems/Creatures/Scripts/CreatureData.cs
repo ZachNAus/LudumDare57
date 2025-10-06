@@ -15,7 +15,12 @@ public class CreatureData : ScriptableObject
 
 	public string creatureName;
 
-	public Sprite sprite;
+	[SerializeField] Sprite sprite_base;
+	[SerializeField] Sprite sprite_shiny;
+
+	public Sprite sprite => IsShiny ? sprite_shiny : sprite_base;
+
+	public bool IsShiny { get; private set; }
 
 	public string[] allLogs;
 
@@ -112,6 +117,8 @@ public class CreatureData : ScriptableObject
 		IsBoy = Random.value > 0.5f;
 
 		healthMaxAlly = Mathf.Round(Random.Range(healthRange.x, healthRange.y));
+
+		IsShiny = Random.value > 0.9f;
 
 		RandomisePool();
 	}

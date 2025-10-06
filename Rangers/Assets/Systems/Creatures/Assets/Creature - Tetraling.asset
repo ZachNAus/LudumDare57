@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueId: 
   creatureName: Tetraling
-  sprite: {fileID: 21300000, guid: a169ed3f8eca7b7488f9a5cffcfcf704, type: 3}
+  sprite_base: {fileID: 21300000, guid: a169ed3f8eca7b7488f9a5cffcfcf704, type: 3}
+  sprite_shiny: {fileID: 21300000, guid: 22229f19e55edc74398af06257723f9b, type: 3}
   allLogs:
   - NO ONE HAS GIVEN ME LOGS
   sizeRangeCM: {x: 14, y: 26}
+  healthRange: {x: 20, y: 30}
   healthMaxAlly: 45
   healthMaxEnemy: 110
   enemyShapePool:
