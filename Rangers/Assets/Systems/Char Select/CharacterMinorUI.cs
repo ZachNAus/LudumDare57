@@ -21,12 +21,15 @@ public class CharacterMinorUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
 	[Header("Optional")]
 	[SerializeField] TextMeshProUGUI enemyNameTxt;
 
+	public RectTransform rectTransform;
+
 	public CreatureData Creature { get; private set; }
 
 	public static event System.Action<CreatureData> OnHoverAny;
 
 	private void Awake()
 	{
+		rectTransform = transform as RectTransform;
 		btn.onClick.AddListener(OnPress);
 	}
 

@@ -61,6 +61,8 @@ public class GameManager : MonoBehaviour
 
 	public int CombatsDoneThisExpdition;
 
+	public int CombatsInExpedition;
+
 	public CreatureData CurrentEnemy { get; private set; }
 
 	public void CharacterSelect()
@@ -70,6 +72,12 @@ public class GameManager : MonoBehaviour
 		if (OwnedCreaturePage.instance.OwnedCreaturesThisRun.Count <= firstExpeditionCreatures.Count)
 		{
 			creature = firstExpeditionCreatures[CombatsDoneThisExpdition];
+
+			CombatsInExpedition = firstExpeditionCreatures.Count;
+		}
+		else
+		{
+			CombatsInExpedition = 3;
 		}
 
 		CurrentEnemy = Instantiate(creature);

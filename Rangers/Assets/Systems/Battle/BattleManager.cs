@@ -62,6 +62,10 @@ public class BattleManager : MonoBehaviour
 
 	[SerializeField] Button dmgNumbersToggleBtn;
 
+	[Space]
+
+	[SerializeField] TextMeshProUGUI turnCounter;
+
 	[Header("Tween settings")]
 	[SerializeField] float healthTxtSizeTween;
 	[SerializeField] float healthTxtDuration;
@@ -91,6 +95,7 @@ public class BattleManager : MonoBehaviour
 
 	public void Init(CreatureData enemy, List<CreatureData> allies)
 	{
+		turnsTaken = 0;
 		SetActive(true);
 
 		if (CurrentEnemy)
@@ -161,6 +166,10 @@ public class BattleManager : MonoBehaviour
 			ally.allyUI.SetAttacks(atks);
 			ally.allyUI.DeselectedAttacks();
 		}
+
+		turnsTaken++;
+
+		turnCounter.SetText($"Wave: {GameManager.instance.CombatsDoneThisExpdition+1}/{GameManager.instance.CombatsInExpedition} Turn: {turnsTaken}");
 	}
 
 	public void Go()
@@ -243,6 +252,7 @@ public class BattleManager : MonoBehaviour
 		GameLoading = false;
 	}
 
+	float turnsTaken;
 
 	public static bool GameLoading;
 

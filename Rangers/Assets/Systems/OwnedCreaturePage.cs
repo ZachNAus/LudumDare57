@@ -31,6 +31,18 @@ public class OwnedCreaturePage : MonoBehaviour
 		PlayerPrefs.SetInt(creatureName.creatureName, PlayerPrefs.GetInt(creatureName.creatureName, 0) + 1);
 	}
 
+	public int GetFoundCreatureCount()
+	{
+		int found = 0;
+		foreach(var c in allCreatures)
+		{
+			if (HasFoundCreature(c))
+				found++;
+		}
+
+		return found;
+	}
+
 	////////////////////////////////////////////////
 	[ReadOnly]
 	public List<CreatureData> OwnedCreaturesThisRun = new List<CreatureData>();
