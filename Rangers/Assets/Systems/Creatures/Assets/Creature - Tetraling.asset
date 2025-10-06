@@ -17,8 +17,8 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: a169ed3f8eca7b7488f9a5cffcfcf704, type: 3}
   desc: Its favourite shape is a triangle.
   sizeRangeCM: {x: 14, y: 26}
-  healthMaxAlly: 30
-  healthMaxEnemy: 90
+  healthMaxAlly: 45
+  healthMaxEnemy: 110
   enemyShapePool:
   - {fileID: 11400000, guid: 76421260c1b765e40a093620c7cd7bb1, type: 2}
   - {fileID: 11400000, guid: 15fd62636bed9c94e8acb121a8276e79, type: 2}
