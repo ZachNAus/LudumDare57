@@ -47,8 +47,9 @@ public class OwnedCreaturePage : MonoBehaviour
 	public void AddCreature(CreatureData capturedCreature, bool instantiate, bool addToLog)
 	{
 		var inst = instantiate ? Instantiate(capturedCreature) : capturedCreature;
-
-		inst.FirstTimeSetup();
+		
+		if(instantiate)
+			inst.FirstTimeSetup(!addToLog);
 
 		inst.EmptyPool();
 

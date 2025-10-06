@@ -108,29 +108,34 @@ public class CreatureData : ScriptableObject
 
 	static int IdsMade = 0;
 
-	public void FirstTimeSetup()
+	bool HasSetup;
+
+	public void FirstTimeSetup(bool starter = false)
 	{
+		if (HasSetup)
+			return;
+
+		HasSetup = true;
+
 		this.uniqueId = $"Creature {IdsMade}";
 		IdsMade++;
 
 		CreatureSize = Mathf.RoundToInt(Random.Range(sizeRangeCM.x, sizeRangeCM.y));
 		IsBoy = Random.value > 0.5f;
 
-		healthMaxAlly = Mathf.Round(Random.Range(healthRange.x, healthRange.y));
+		if(starter)
+			healthMaxAlly = Mathf.Round(Mathf.Lerp(healthRange.x, healthRange.y, 0.75f));
+		else
+			healthMaxAlly = Mathf.Round(Random.Range(healthRange.x, healthRange.y));
+
 
 		IsShiny = Random.value > 0.9f;
 
 		RandomisePool();
 	}
 
-	bool randomisedPool;
 	void RandomisePool()
 	{
-		if (randomisedPool)
-			return;
-
-		randomisedPool = true;
-
 		List<ShapeData> globalPool = new List<ShapeData>();
 		globalPool.AddRange(OwnedCreaturePage.instance.globalShapePool);
 
